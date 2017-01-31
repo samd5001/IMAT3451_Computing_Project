@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:key="login"
+        android:title="Login">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.p14137775.myapplication.LoginActivity"
+            android:targetPackage="com.p14137775.myapplication" />
+    </Preference>
+
+    <Preference
+        android:key="logout"
+        android:title="Logout"></Preference>
+
+    <ListPreference
+        android:key="units"
+        android:title="Units of measurement"
+        android:entries="@array/unitsArray"
+        android:entryValues="@array/unitsValues">
+    </ListPreference>
+
+    <PreferenceScreen
+        android:key="details"
+        android:title="Edit personal details">
+        <EditTextPreference android:key="name" android:title="Name"></EditTextPreference>
+    </PreferenceScreen>
+
+    <PreferenceScreen
+        android:key="data"
+        android:title="Manage Data">
+        <EditTextPreference android:key="name" android:title="Name"></EditTextPreference>
+    </PreferenceScreen>
+
+</PreferenceScreen>
