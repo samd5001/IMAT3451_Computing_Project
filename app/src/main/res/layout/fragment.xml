@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     android:id="@+id/frameLayout">
     <TextView
-        android:id="@+id/textView"
-        android:text="item"
+        android:id="@+id/textView2"
+        android:text="@string/begin_reg"
         android:textSize="36sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -30,11 +30,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (sharedPreferences.getBoolean("firstRun", true)) {
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
-            sharedPreferences.edit().putBoolean("firstRun", false).commit();
+            sharedPreferences.edit().putBoolean("firstRun", false).apply();
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_dumbell_48dp);
+        toolbar.setNavigationIcon(R.drawable.ic_dumbbell_48dp);
         TabLayout tabs = (TabLayout) findViewById(R.id.tabLayout);
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
 
@@ -70,11 +70,11 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
     }
 
-    static class ViewPagerAdapter extends FragmentPagerAdapter {
+    private static class ViewPagerAdapter extends FragmentPagerAdapter {
         private List<Fragment> mFragmentList = new ArrayList<>();
         private List<String> mFragmentTitleList = new ArrayList<>();
 
-        public ViewPagerAdapter(FragmentManager manager) {
+        ViewPagerAdapter(FragmentManager manager) {
             super(manager);
         }
 
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
             return mFragmentList.size();
         }
 
-        public void add(String title, Fragment fragment) {
+        void add(String title, Fragment fragment) {
             mFragmentList.add(fragment);
             mFragmentTitleList.add(title);
         }

@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">Lift Logger</string>
+    <string name="login">Login</string>
+    <string name="email">Email</string>
+    <string name="email_confirm">Confirm Email</string>
+    <string name="password">Password</string>
+    <string name="password_confirm">Confirm Password</string>
+    <string name="forgot">Forgotten your password?</string>
+    <string name="new_account">No account?</string>
+    <string name="skip">Skip</string>
+    <string name="register">Register</string>
+    <string name="begin_reg">Begin Registration</string>
+    <string name="name">Name</string>
+    <string name="dob">Date of birth</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="height">Height</string>
+    <string name="weight">Weight</string>
+    <string name="complete_reg">Complete Registration</string>
+
 </resources>

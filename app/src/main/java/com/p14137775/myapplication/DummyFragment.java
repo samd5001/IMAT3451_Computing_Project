@@ -8,10 +8,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-/**
- * Created by Samuel on 26/12/2016.
- */
-
 public class DummyFragment extends Fragment {
 
         public static final String COLOR = "color";
@@ -30,7 +26,7 @@ public class DummyFragment extends Fragment {
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.fragment, container, false);
             FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.frameLayout);
-            TextView textView = (TextView) view.findViewById(R.id.textView);
+            TextView textView = (TextView) view.findViewById(R.id.textView2);
             frameLayout.setBackgroundColor(getArguments().getInt(COLOR));
             textView.setText(getArguments().getString(TEXT));
             return view;
