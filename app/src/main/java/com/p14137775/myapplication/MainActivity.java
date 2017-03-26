@@ -2,7 +2,6 @@ package com.p14137775.myapplication;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -26,15 +25,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("Preferences", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("preferences", MODE_PRIVATE);
 
-        if (sharedPreferences.getBoolean("firstRun", true)) {
+        if (prefs.getBoolean("firstRun", true)) {
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
-            sharedPreferences.edit().putBoolean("firstRun", false).apply();
+            prefs.edit().putBoolean("firstRun", false).apply();
+            prefs.edit().putBoolean("loggedIn", false).apply();
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_dumbbell_48dp);
+        toolbar.setNavigationIcon(R.drawable.ic_dumbbell);
         TabLayout tabs = (TabLayout) findViewById(R.id.tabLayout);
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
 
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_settings, menu);//Menu Resource, Menu
+        getMenuInflater().inflate(R.menu.menu_settings, menu);
         return true;
     }
 
@@ -64,9 +64,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.add("Exercises", DummyFragment.newInstance("ToDo", (Color.parseColor("#fafafa"))));
-        adapter.add("Workouts", DummyFragment.newInstance("ToDo", (Color.parseColor("#fafafa"))));
-        adapter.add("History", DummyFragment.newInstance("ToDo", (Color.parseColor("#fafafa"))));
+        ExerciseFragment exerciseFragment = new ExerciseFragment();
+        WorkoutFragment workoutFragment = new WorkoutFragment();
+        HistoryFragment historyFragment = new HistoryFragment();
+        adapter.add("Exercises", exerciseFragment);
+        adapter.add("Workouts", workoutFragment);
+        adapter.add("History", historyFragment);
         viewPager.setAdapter(adapter);
     }
 

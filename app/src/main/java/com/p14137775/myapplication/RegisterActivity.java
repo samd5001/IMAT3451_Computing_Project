@@ -1,6 +1,5 @@
 package com.p14137775.myapplication;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -22,10 +21,6 @@ public class RegisterActivity extends AppCompatActivity
     }
 
     public void onRegisterComplete() {
-        Intent intent = new Intent(
-                RegisterActivity.this,
-                LoginActivity.class);
-        startActivity(intent);
         finish();
     }
 

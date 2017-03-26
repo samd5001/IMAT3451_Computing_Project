@@ -1,6 +1,7 @@
 package com.p14137775.myapplication;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -27,7 +28,7 @@ import wrappers.VolleyWrapper;
 
 public class LoginActivity extends AppCompatActivity {
     private SQLiteUserWrapper db;
-
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +70,20 @@ public class LoginActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        prefs = getSharedPreferences("preferences", MODE_PRIVATE);
+        SharedPreferences.OnSharedPreferenceChangeListener prefListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                if (key.equals("loggedIn")) {
+                    finish();
+                }
+            }
+        };
+        prefs.registerOnSharedPreferenceChangeListener(prefListener);
     }
+
+
 
     private void remoteLogin(final String email, final String password) {
         String tag_string_req = "req_login";
@@ -92,10 +106,9 @@ public class LoginActivity extends AppCompatActivity {
                         String height = user.getString("height");
                         String weight = user.getString("weight");
                         String goal = user.getString("goal");
-
                         db.addUser(name, email, dob, gender, height, weight, goal);
+                        prefs.edit().putBoolean("loggedIn", true).apply();
 
-                        finish();
                     } else {
                         String message = jObj.getString("message");
                         Toast.makeText(getApplicationContext(),

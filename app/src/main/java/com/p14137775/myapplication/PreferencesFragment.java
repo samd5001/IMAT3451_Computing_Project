@@ -11,27 +11,23 @@ import android.widget.Toast;
 import static android.content.Context.MODE_PRIVATE;
 import static com.p14137775.myapplication.R.xml.preferences;
 
-/**
- * Created by Samuel on 26/12/2016.
- */
-
 public class PreferencesFragment extends PreferenceFragment {
     @Override
     public void onCreate(final Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(preferences);
-        final SharedPreferences sharedpreferences = getActivity().getSharedPreferences("Preferences", MODE_PRIVATE);
+        final SharedPreferences sharedpreferences = getActivity().getSharedPreferences("preferences", MODE_PRIVATE);
         final Preference hiddenPreference;
         final PreferenceScreen screen = getPreferenceScreen();
         if (sharedpreferences.getBoolean("loggedIn", false))
         {
             hiddenPreference = findPreference("login");
             screen.removePreference(hiddenPreference);
-            Preference logOut = (Preference) findPreference("logout");
+            Preference logOut = findPreference("logout");
             logOut.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
-                    sharedpreferences.edit().putBoolean("loggedIn", false).commit();
+                    sharedpreferences.edit().putBoolean("loggedIn", false).apply();
                     Toast.makeText(getActivity().getApplicationContext(),
                             "Logged out", Toast.LENGTH_SHORT).show();
                     screen.addPreference(hiddenPreference);

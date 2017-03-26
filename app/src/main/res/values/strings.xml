@@ -17,5 +17,6 @@
     <string name="height">Height</string>
     <string name="weight">Weight</string>
     <string name="complete_reg">Complete Registration</string>
+    <string name="settings">Settings</string>
 
 </resources>

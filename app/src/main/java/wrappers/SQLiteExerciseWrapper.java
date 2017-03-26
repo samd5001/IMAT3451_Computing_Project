@@ -8,10 +8,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import classes.User;
 
-public class SQLiteUserWrapper extends SQLiteOpenHelper {
+public class SQLiteExerciseWrapper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "users";
+    private static final String DATABASE_NAME = "data";
     private static final String TABLE_USER = "user";
     private static final String KEY_EMAIL = "email";
     private static final String KEY_NAME = "name";
@@ -21,7 +21,7 @@ public class SQLiteUserWrapper extends SQLiteOpenHelper {
     private static final String KEY_WEIGHT = "weight";
     private static final String KEY_GOAL = "goal";
 
-    public SQLiteUserWrapper(Context context) {
+    public SQLiteExerciseWrapper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

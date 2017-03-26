@@ -3,6 +3,7 @@ package com.p14137775.myapplication;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -25,10 +26,12 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import wrappers.DateConverter;
+import wrappers.DateTimeWrapper;
 import wrappers.SQLiteUserWrapper;
 import wrappers.URLWrapper;
 import wrappers.VolleyWrapper;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class RegisterCompleteFragment extends Fragment {
     private String email;
@@ -75,7 +78,7 @@ public class RegisterCompleteFragment extends Fragment {
                             int genderId = genderGroup.getCheckedRadioButtonId();
                             View selectedGender = genderGroup.findViewById(genderId);
                             int gender = genderGroup.indexOfChild(selectedGender);
-                            DateConverter date = new DateConverter(datePicker.getYear(), (datePicker.getMonth() + 1), datePicker.getDayOfMonth());
+                            DateTimeWrapper date = new DateTimeWrapper(datePicker.getYear(), (datePicker.getMonth() + 1), datePicker.getDayOfMonth());
                             String dob = date.sqlReady();
                             registerUser(email, password, name, dob, gender, height, weight, goal);
                             mCallback.onRegisterComplete();
@@ -130,6 +133,8 @@ public class RegisterCompleteFragment extends Fragment {
                         String weight = user.getString("weight");
                         String goal = user.getString("goal");
                         db.addUser(name, email, dob, gender, height, weight, goal);
+                        SharedPreferences prefs = getActivity().getSharedPreferences("preferences", MODE_PRIVATE);
+                        prefs.edit().putBoolean("loggedIn", true).apply();
                         Toast.makeText(getActivity().getApplicationContext(), "Account created. You have been logged in", Toast.LENGTH_LONG).show();
                     } else {
                         String errorMsg = jObj.getString("message");

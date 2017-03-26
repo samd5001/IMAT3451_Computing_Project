@@ -1,11 +1,11 @@
 package wrappers;
 
-public class DateConverter {
+public class DateTimeWrapper {
     private int year;
     private int month;
     private int day;
 
-    public DateConverter(int year, int month, int day) {
+    public DateTimeWrapper(int year, int month, int day) {
         this.year = year;
         this.month = month;
         this.day = day;
