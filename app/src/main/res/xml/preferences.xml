@@ -3,7 +3,7 @@
 
     <Preference
         android:key="login"
-        android:title="Login">
+        android:title="Loginn">
         <intent
             android:action="android.intent.action.VIEW"
             android:targetClass="com.p14137775.myapplication.LoginActivity"
@@ -12,7 +12,7 @@
 
     <Preference
         android:key="logout"
-        android:title="Logout"></Preference>
+        android:title="Logout" />
 
     <ListPreference
         android:key="units"
@@ -24,13 +24,17 @@
     <PreferenceScreen
         android:key="details"
         android:title="Edit personal details">
-        <EditTextPreference android:key="name" android:title="Name"></EditTextPreference>
+        <EditTextPreference
+            android:key="name"
+            android:title="Name" />
     </PreferenceScreen>
 
     <PreferenceScreen
         android:key="data"
         android:title="Manage Data">
-        <EditTextPreference android:key="name" android:title="Name"></EditTextPreference>
+        <EditTextPreference
+            android:key="name"
+            android:title="Name" />
     </PreferenceScreen>
 
 </PreferenceScreen>
