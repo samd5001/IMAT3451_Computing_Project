@@ -132,7 +132,7 @@ public class RegisterCompleteFragment extends Fragment {
                         String height = user.getString("height");
                         String weight = user.getString("weight");
                         String goal = user.getString("goal");
-                        db.addUser(name, email, dob, gender, height, weight, goal);
+                        db.storeUser(name, email, dob, gender, height, weight, goal);
                         SharedPreferences prefs = getActivity().getSharedPreferences("preferences", MODE_PRIVATE);
                         prefs.edit().putBoolean("loggedIn", true).apply();
                         Toast.makeText(getActivity().getApplicationContext(), "Account created. You have been logged in", Toast.LENGTH_LONG).show();

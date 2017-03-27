@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request.Method;
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
@@ -88,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
     private void remoteLogin(final String email, final String password) {
         String tag_string_req = "req_login";
 
-        StringRequest strReq = new StringRequest(Method.POST,
+        StringRequest strReq = new StringRequest(Request.Method.POST,
                 URLWrapper.loginURL, new Response.Listener<String>() {
 
             @Override
@@ -106,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
                         String height = user.getString("height");
                         String weight = user.getString("weight");
                         String goal = user.getString("goal");
-                        db.addUser(name, email, dob, gender, height, weight, goal);
+                        db.storeUser(name, email, dob, gender, height, weight, goal);
                         prefs.edit().putBoolean("loggedIn", true).apply();
 
                     } else {

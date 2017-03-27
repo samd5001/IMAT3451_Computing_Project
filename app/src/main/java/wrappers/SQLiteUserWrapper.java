@@ -10,60 +10,54 @@ import classes.User;
 
 public class SQLiteUserWrapper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "users";
-    private static final String TABLE_USER = "user";
-    private static final String KEY_EMAIL = "email";
-    private static final String KEY_NAME = "name";
-    private static final String KEY_DOB = "dob";
-    private static final String KEY_GENDER = "gender";
-    private static final String KEY_HEIGHT = "height";
-    private static final String KEY_WEIGHT = "weight";
-    private static final String KEY_GOAL = "goal";
+    private static final String dbName = "users";
+    private static final String tableUser = "user";
+    private static final String keyEmail = "email";
+    private static final String keyName = "name";
+    private static final String keyDob = "dob";
+    private static final String keyGender = "gender";
+    private static final String keyHeight = "height";
+    private static final String keyWeight = "weight";
+    private static final String keyGoal = "goal";
 
     public SQLiteUserWrapper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        super(context, dbName, null, 1);
     }
 
-    // Creating Tables
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String createUser= "CREATE TABLE " + TABLE_USER + "(" +
-            KEY_EMAIL + " varchar(50) NOT NULL UNIQUE PRIMARY KEY, " +
-            KEY_NAME + " varchar(40) NOT NULL, " +
-            KEY_DOB + " date, " +
-            KEY_GENDER + " bit, " +
-            KEY_HEIGHT + " float, " +
-            KEY_WEIGHT + " float, " +
-            KEY_GOAL + " bit)";
+        String createUser= "CREATE TABLE " + tableUser + "(" +
+                keyEmail + " varchar(50) NOT NULL UNIQUE PRIMARY KEY, " +
+                keyName + " varchar(40) NOT NULL, " +
+                keyDob + " date, " +
+                keyGender + " bit, " +
+                keyHeight + " float, " +
+                keyWeight + " float, " +
+                keyGoal + " bit)";
         db.execSQL(createUser);
     }
 
-    // Upgrading database
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
+        db.execSQL("DROP TABLE IF EXISTS " + tableUser);
         onCreate(db);
     }
 
-    /**
-     * Storing user details in database
-     * */
-    public void addUser(String email, String name,
-                        String dob, String gender, String height, String weight, String goal) {
+    public void storeUser(String email, String name,
+                          String dob, String gender, String height, String weight, String goal) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_EMAIL, email);
-        values.put(KEY_NAME, name);
-        values.put(KEY_DOB, dob);
-        values.put(KEY_GENDER, gender);
-        values.put(KEY_HEIGHT, height);
-        values.put(KEY_WEIGHT, weight);
-        values.put(KEY_GOAL, goal);
+        values.put(keyEmail, email);
+        values.put(keyName, name);
+        values.put(keyDob, dob);
+        values.put(keyGender, gender);
+        values.put(keyHeight, height);
+        values.put(keyWeight, weight);
+        values.put(keyGoal, goal);
 
         // Inserting Row
-        long id = db.insert(TABLE_USER, null, values);
+        db.insert(tableUser, null, values);
         db.close();
     }
 
@@ -72,7 +66,7 @@ public class SQLiteUserWrapper extends SQLiteOpenHelper {
      * */
     public User getUser() {
 
-        String selectQuery = "SELECT  * FROM " + TABLE_USER;
+        String selectQuery = "SELECT  * FROM " + tableUser;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         cursor.moveToFirst();
@@ -85,7 +79,7 @@ public class SQLiteUserWrapper extends SQLiteOpenHelper {
     public void deleteUser() {
         SQLiteDatabase db = this.getWritableDatabase();
         // Delete All Rows
-        db.delete(TABLE_USER, null, null);
+        db.delete(tableUser, null, null);
         db.close();
     }
 

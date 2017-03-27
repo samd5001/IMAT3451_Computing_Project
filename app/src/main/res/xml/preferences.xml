@@ -3,7 +3,7 @@
 
     <Preference
         android:key="login"
-        android:title="Loginn">
+        android:title="Login">
         <intent
             android:action="android.intent.action.VIEW"
             android:targetClass="com.p14137775.myapplication.LoginActivity"
