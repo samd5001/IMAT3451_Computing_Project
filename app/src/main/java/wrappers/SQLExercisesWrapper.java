@@ -50,8 +50,8 @@ public class SQLExercisesWrapper extends SQLiteOpenHelper {
     @Override
     public void onCreate(final SQLiteDatabase db) {
         String createExercises= "CREATE TABLE " + tableExercises + "(" +
-            keyName + " varchar(20) NOT NULL  UNIQUE PRIMARY KEY, " +
-            keyDescription + " varchar(300) NOT NULL " +
+            keyName + " varchar(20) NOT NULL UNIQUE PRIMARY KEY, " +
+            keyDescription + " varchar(300) NOT NULL, " +
             keyType + " tinyint NOT NULL, " +
             keyMin + " int, " +
             keyMax + " int, " +
@@ -74,11 +74,11 @@ public class SQLExercisesWrapper extends SQLiteOpenHelper {
         String createRecords = "CREATE TABLE " + tableRecords + "(" +
             keyID + " int NOT NULL PRIMARY KEY, " +
             keyExName + " int NOT NULL, " +
-            keyPlanName + " int , " +
+            keyPlanName + " int, " +
             keyTime + " DATETIME NOT NULL, " +
             keySets + " text, FOREIGN KEY (" +
             keyExName + ") REFERENCES " + tableExercises + "(" + keyID +
-            ") ON DELETE CASCADE, FOREIGN KEY (" + keyPlanName + ") REFERENCES " + tablePlans + "(" + keyID + ")";
+            ") ON DELETE CASCADE, FOREIGN KEY (" + keyPlanName + ") REFERENCES " + tablePlans + "(" + keyID + "))";
 
         String tag_string_req = "req_exercises";
         StringRequest strReq = new StringRequest(Request.Method.GET,
@@ -89,6 +89,7 @@ public class SQLExercisesWrapper extends SQLiteOpenHelper {
                     JSONArray jArr = new JSONArray(response);
                     for (int i = 0; i < jArr.length(); i++) {
                         JSONObject jObj = jArr.getJSONObject(i);
+                        jObj = jObj.getJSONObject("exercise");
                         Exercise exercise = new Exercise(jObj.getString("name"), jObj.getString("description"), jObj.getInt("type"), jObj.getInt("minThreshold"), jObj.getInt("maxThreshold"), jObj.getString("areasWorked"), (jObj.getInt("userMade") > 0));
                         storeExercise(exercise);
                     }
@@ -106,7 +107,6 @@ public class SQLExercisesWrapper extends SQLiteOpenHelper {
         });
         VolleyWrapper.getInstance().addToRequestQueue(strReq, tag_string_req);
 
-        String getPlans = "SELECT * FROM " + tablePlans + " WHERE " + keyUser + " = 0";
 
         db.execSQL(createExercises);
         db.execSQL(createPlans);
@@ -141,18 +141,18 @@ public class SQLExercisesWrapper extends SQLiteOpenHelper {
 
     public Exercise getExercise(String name) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String selectQuery = "SELECT * FROM " + tableExercises + " WHERE " + keyName + " = " + name;
-        boolean user;
+        String selectQuery = "SELECT * FROM " + tableExercises + " WHERE " + keyName + " = '" + name + "'";
         Cursor cursor = db.rawQuery(selectQuery, null);
         cursor.moveToFirst();
         Exercise exercise = new Exercise(cursor.getString(0), cursor.getString(1), cursor.getInt(2), cursor.getInt(3), cursor.getInt(4), cursor.getString(5), (cursor.getInt(6) != 0));
         cursor.close();
+        db.close();
         return exercise;
     }
 
-    public ArrayList getExerciseList(String area) {
+    public ArrayList<String> getExerciseList(String area) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String selectQuery = "SELECT * FROM " + tableExercises + " WHERE " + keyAreas + " LIKE %" + area + "%";
+        String selectQuery = "SELECT * FROM " + tableExercises + " WHERE " + keyAreas + " LIKE '%" + area + "%'";
         Cursor cursor = db.rawQuery(selectQuery, null);
         cursor.moveToFirst();
         ArrayList<String> names = new ArrayList<>();
@@ -161,6 +161,7 @@ public class SQLExercisesWrapper extends SQLiteOpenHelper {
             cursor.moveToNext();
         }
         cursor.close();
+        db.close();
         return names;
     }
 

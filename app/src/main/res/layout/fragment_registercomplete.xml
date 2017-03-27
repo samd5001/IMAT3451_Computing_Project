@@ -50,13 +50,12 @@
         android:id="@+id/datePicker"
         android:layout_width="244dp"
         android:layout_height="63dp"
-        android:layout_marginTop="22dp"
+        android:layout_marginTop="39dp"
         android:calendarViewShown="false"
         android:datePickerMode="spinner"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText"
-        app:layout_constraintHorizontal_bias="0.637" />
+        app:layout_constraintTop_toBottomOf="@+id/editText" />
 
     <RadioGroup
         android:id="@+id/radioGroup"
@@ -109,7 +108,7 @@
         android:layout_marginTop="8dp"
         android:focusable="true"
         android:hint="@string/weight"
-        android:inputType="number"
+        android:inputType="numberDecimal"
         android:textColor="@color/colorTextLight"
         android:textColorHint="@color/colorTextLight"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -120,7 +119,7 @@
         android:id="@+id/button"
         android:layout_width="268dp"
         android:layout_height="56dp"
-        android:layout_marginTop="13dp"
+        android:layout_marginTop="19dp"
         android:backgroundTint="@color/colorPrimaryHighlight"
         android:text="@string/complete_reg"
         android:textAppearance="@android:style/TextAppearance.Material.Body1"

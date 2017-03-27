@@ -9,14 +9,14 @@ import android.preference.PreferenceScreen;
 import android.widget.Toast;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.p14137775.myapplication.R.xml.preferences;
+import static com.p14137775.myapplication.R.xml.settings_preferences;
 
 public class PreferencesFragment extends PreferenceFragment {
     @Override
     public void onCreate(final Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(preferences);
+        addPreferencesFromResource(settings_preferences);
         final SharedPreferences sharedpreferences = getActivity().getSharedPreferences("preferences", MODE_PRIVATE);
         final Preference hiddenPreference;
         final PreferenceScreen screen = getPreferenceScreen();

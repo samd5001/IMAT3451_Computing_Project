@@ -53,6 +53,7 @@ public class RegisterCompleteFragment extends Fragment {
         final EditText heightText = (EditText) view.findViewById(R.id.editText2);
         final EditText weightText = (EditText) view.findViewById(R.id.editText3);
         final DatePicker datePicker = (DatePicker) view.findViewById(R.id.datePicker);
+        datePicker.setDescendantFocusability(DatePicker.FOCUS_BLOCK_DESCENDANTS);
         final RadioGroup genderGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
         final Button register = (Button) view.findViewById(R.id.button);
 
