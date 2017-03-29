@@ -2,36 +2,39 @@ package com.p14137775.myapplication;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import classes.Exercise;
-import wrappers.SQLExercisesWrapper;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 
-public class ExerciseDetailsFragment extends android.support.v4.app.Fragment {
+import classes.Exercise;
+import wrappers.VolleyWrapper;
+
+public class ExerciseDetailsFragment extends Fragment {
     private Exercise exercise;
     private OnBegin mCallback;
-    SQLExercisesWrapper db;
+    private ImageLoader mImageLoader;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        db = ((MainActivity)getActivity()).getDb();
-        exercise = db.getExercise(getArguments().getString("name"));
+        exercise = ((MainActivity)getActivity()).getExercise();
         return inflater.inflate(R.layout.fragment_exercisedetails, parent, false);
     }
 
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        ImageView image = (ImageView) view.findViewById(R.id.imageView);
+        NetworkImageView image = (NetworkImageView) view.findViewById(R.id.networkImageView);
+        mImageLoader = VolleyWrapper.getInstance().getImageLoader();
+        image.setImageUrl(exercise.getImageURL(), mImageLoader);
         TextView name = (TextView) view.findViewById(R.id.textView);
         TextView description = (TextView) view.findViewById(R.id.textView2);
         Button button = (Button) view.findViewById(R.id.button);
         name.setText(exercise.getName());
         description.setText(exercise.getDescription());
-
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

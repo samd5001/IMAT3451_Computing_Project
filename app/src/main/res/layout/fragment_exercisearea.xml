@@ -9,10 +9,9 @@
         android:layout_height="60dp"
         android:background="@drawable/bluebar"
         android:text="@string/area"
-        android:textSize="24sp"
-        android:paddingTop="12dp"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"/>
+        android:textSize="22sp"
+        android:gravity="center_vertical"
+        android:padding="12dp"/>
 
     <ListView
         android:id="@+id/listView"

@@ -5,10 +5,10 @@ public class User {
     private String email;
     private String name;
     private String dob;
-    private String gender;
-    private String height;
-    private String weight;
-    private String goal;
+    private int gender;
+    private float height;
+    private float weight;
+    private int goal;
     
     public User(String email, String name, String dob, String gender, String height, String weight, String goal) {
         this.email = email;
@@ -27,20 +27,20 @@ public class User {
         this.dob = dob;
     }
 
-    public void setGender(Boolean gender) {
-        this.gender = String.valueOf(gender);
+    public void setGender(int gender) {
+        this.gender = gender;
     }
 
     public void setHeight(Float height) {
-        this.height = String.valueOf(height);
+        this.height = height;
     }
 
     public void setWeight(Float weight) {
-        this.weight = String.valueOf(weight);
+        this.weight = weight;
     }
 
     public void setGoal(Integer goal) {
-        this.goal = String.valueOf(goal);
+        this.goal = goal;
     }
     
     public String getEmail() {
@@ -55,19 +55,19 @@ public class User {
         return this.dob;
     }
 
-    public Boolean getGender() {
-        return Boolean.valueOf(this.gender);
+    public int getGender() {
+        return this.gender;
     }
 
     public float getHeight() {
-        return Float.valueOf(this.height);
+        return this.height;
     }
 
     public float getWeight() {
-        return Float.valueOf(this.weight);
+        return this.weight;
     }
 
     public int getGoal() {
-        return Integer.valueOf(this.goal);
+        return this.goal;
     }
 }

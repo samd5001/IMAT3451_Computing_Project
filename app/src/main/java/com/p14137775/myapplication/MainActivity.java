@@ -17,23 +17,27 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import classes.Exercise;
 import classes.User;
-import wrappers.SQLExercisesWrapper;
+import wrappers.SQLDataWrapper;
+import wrappers.SQLiteUserWrapper;
 
-public class MainActivity extends AppCompatActivity implements ExerciseAreasFragment.OnAreaSelected, ExerciseSearchFragment.OnExerciseSelected, ExerciseDetailsFragment.OnBegin {
+public class MainActivity extends AppCompatActivity implements ExerciseAreasFragment.OnAreaSelected, ExerciseSearchFragment.OnExerciseSelected, ExerciseDetailsFragment.OnBegin, ExerciseTrackFragment.OnComplete {
 
     ExerciseFragment exerciseFragment;
     ExerciseFragment workoutFragment;
     ExerciseFragment historyFragment;
     User user;
-    SQLExercisesWrapper db;
+    Exercise exercise;
+    SQLDataWrapper db;
     ViewPagerAdapter adapter;
+    SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        SharedPreferences prefs = getSharedPreferences("preferences", MODE_PRIVATE);
+        prefs = getSharedPreferences("preferences", MODE_PRIVATE);
 
         if (prefs.getBoolean("firstRun", true)) {
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
@@ -43,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements ExerciseAreasFrag
         exerciseFragment = new ExerciseFragment();
         workoutFragment = new ExerciseFragment();
         historyFragment = new ExerciseFragment();
-        db = new SQLExercisesWrapper(getApplicationContext());
+        db = new SQLDataWrapper(getApplicationContext());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_dumbbell);
         TabLayout tabs = (TabLayout) findViewById(R.id.tabLayout);
@@ -92,12 +96,21 @@ public class MainActivity extends AppCompatActivity implements ExerciseAreasFrag
         viewPager.setAdapter(adapter);
     }
 
-    public SQLExercisesWrapper getDb() {
+    public SQLDataWrapper getDb() {
         return db;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public Exercise getExercise() {
+        return exercise;
     }
 
     @Override
     public void onAreaSelected(String area) {
+        user = new SQLiteUserWrapper(getApplicationContext(), prefs).getUser();
         ArrayList<String> exercises = db.getExerciseList(area);
         if (!exercises.isEmpty()) {
             ExerciseSearchFragment searchFragment = new ExerciseSearchFragment();
@@ -107,21 +120,24 @@ public class MainActivity extends AppCompatActivity implements ExerciseAreasFrag
             exerciseFragment.getChildFragmentManager().beginTransaction()
                     .replace(R.id.placeholder, searchFragment, "exerciseSearch").addToBackStack(null).commit();
         } else Toast.makeText(getApplicationContext(),
-                "Loading database. Please wait and try again", Toast.LENGTH_LONG).show();
+                "Loading database. Please wait and try again (An internet connection is required for initial setup", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onExerciseSelected(String name) {
+        exercise = db.getExercise(name);
         ExerciseDetailsFragment detailsFragment = new ExerciseDetailsFragment();
-        Bundle args = new Bundle();
-        args.putString("name", name);
-        detailsFragment.setArguments(args);
         exerciseFragment.getChildFragmentManager().beginTransaction()
                 .replace(R.id.placeholder, detailsFragment, "exerciseDetails").addToBackStack(null).commit();
     }
 
     @Override
     public void onBegin() {
+        exerciseFragment.getChildFragmentManager().beginTransaction().replace((R.id.placeholder), new ExerciseTrackFragment(), "exerciseTracking").addToBackStack(null).commit();
+    }
+
+    @Override
+    public void onComplete() {
 
     }
 

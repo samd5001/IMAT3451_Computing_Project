@@ -4,15 +4,17 @@ public class Exercise {
     private String name;
     private String description;
     private int type;
+    private String imageURL;
     private int minThreshold;
     private int maxThreshold;
     private String areasWorked;
     private boolean userMade;
 
-    public Exercise(String name, String description, int type, int minThreshold, int maxThreshold, String areasWorked, boolean userMade) {
+    public Exercise(String name, String description, int type, String imageURL, int minThreshold, int maxThreshold, String areasWorked, boolean userMade) {
         this.name = name;
         this.description = description;
         this.type = type;
+        this.imageURL = imageURL;
         this.minThreshold = minThreshold;
         this.maxThreshold = maxThreshold;
         this.areasWorked = areasWorked;
@@ -29,6 +31,10 @@ public class Exercise {
 
     public int getType() {
         return type;
+    }
+
+    public String getImageURL() {
+        return imageURL;
     }
 
     public int getMinThreshold() {

@@ -8,6 +8,8 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.widget.Toast;
 
+import wrappers.SQLiteUserWrapper;
+
 import static android.content.Context.MODE_PRIVATE;
 import static com.p14137775.myapplication.R.xml.settings_preferences;
 
@@ -17,17 +19,17 @@ public class PreferencesFragment extends PreferenceFragment {
     {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(settings_preferences);
-        final SharedPreferences sharedpreferences = getActivity().getSharedPreferences("preferences", MODE_PRIVATE);
+        final SharedPreferences prefs = getActivity().getSharedPreferences("preferences", MODE_PRIVATE);
         final Preference hiddenPreference;
         final PreferenceScreen screen = getPreferenceScreen();
-        if (sharedpreferences.getBoolean("loggedIn", false))
+        if (prefs.getBoolean("loggedIn", false))
         {
             hiddenPreference = findPreference("login");
             screen.removePreference(hiddenPreference);
             Preference logOut = findPreference("logout");
             logOut.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
-                    sharedpreferences.edit().putBoolean("loggedIn", false).apply();
+                    SQLiteUserWrapper db = new SQLiteUserWrapper(getActivity().getApplicationContext(), prefs);
                     Toast.makeText(getActivity().getApplicationContext(),
                             "Logged out", Toast.LENGTH_SHORT).show();
                     screen.addPreference(hiddenPreference);

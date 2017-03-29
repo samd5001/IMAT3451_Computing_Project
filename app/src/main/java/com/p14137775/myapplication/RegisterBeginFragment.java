@@ -97,7 +97,7 @@ public class RegisterBeginFragment extends Fragment {
                 try {
                     JSONObject jObj = new JSONObject(response);
                     boolean error = jObj.getBoolean("error");
-                    if (error) {
+                    if (!error) {
                         Toast.makeText(getActivity().getApplicationContext(), "Email is already registered", Toast.LENGTH_LONG).show();
                     } else {
                         mCallback.onButtonClicked(email, password);

@@ -1,7 +1,6 @@
 package com.p14137775.myapplication;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -28,7 +27,6 @@ import wrappers.VolleyWrapper;
 
 public class LoginActivity extends AppCompatActivity {
     private SQLiteUserWrapper db;
-    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +38,10 @@ public class LoginActivity extends AppCompatActivity {
         final EditText emailText = (EditText) findViewById(R.id.editText);
         final EditText passwordText = (EditText) findViewById(R.id.editText2);
         final TextView register = (TextView) findViewById(R.id.textView4);
+        final TextView forgot = (TextView) findViewById(R.id.textView3);
 
         // SQLite database handler
-        db = new SQLiteUserWrapper(getApplicationContext());
+        db = new SQLiteUserWrapper(getApplicationContext(), getSharedPreferences("preferences", MODE_PRIVATE));
 
         login.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -64,23 +63,24 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        forgot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String email = emailText.getText().toString().trim();
+                Intent i = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+                i.putExtra("email", email);
+                startActivity(i);
+            }
+        });
+
+
+
 
         skip.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 finish();
             }
         });
-
-        prefs = getSharedPreferences("preferences", MODE_PRIVATE);
-        SharedPreferences.OnSharedPreferenceChangeListener prefListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-            @Override
-            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                if (key.equals("loggedIn")) {
-                    finish();
-                }
-            }
-        };
-        prefs.registerOnSharedPreferenceChangeListener(prefListener);
     }
 
 
@@ -107,7 +107,6 @@ public class LoginActivity extends AppCompatActivity {
                         String weight = user.getString("weight");
                         String goal = user.getString("goal");
                         db.storeUser(name, email, dob, gender, height, weight, goal);
-                        prefs.edit().putBoolean("loggedIn", true).apply();
 
                     } else {
                         String message = jObj.getString("message");

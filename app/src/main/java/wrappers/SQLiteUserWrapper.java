@@ -2,6 +2,7 @@ package wrappers;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -19,9 +20,11 @@ public class SQLiteUserWrapper extends SQLiteOpenHelper {
     private static final String keyHeight = "height";
     private static final String keyWeight = "weight";
     private static final String keyGoal = "goal";
+    private SharedPreferences prefs;
 
-    public SQLiteUserWrapper(Context context) {
+    public SQLiteUserWrapper(Context context, SharedPreferences prefs) {
         super(context, dbName, null, 1);
+        this.prefs = prefs;
     }
 
     @Override
@@ -55,32 +58,32 @@ public class SQLiteUserWrapper extends SQLiteOpenHelper {
         values.put(keyHeight, height);
         values.put(keyWeight, weight);
         values.put(keyGoal, goal);
-
-        // Inserting Row
         db.insert(tableUser, null, values);
         db.close();
+        prefs.edit().putBoolean("loggedIn", true).apply();
     }
 
-    /**
-     * Getting user data from database
-     * */
     public User getUser() {
-
-        String selectQuery = "SELECT  * FROM " + tableUser;
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-        cursor.moveToFirst();
-        User user = new User(cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7));
-        cursor.close();
-        db.close();
-        return user;
+        if (prefs.getBoolean("loggedIn", true)) {
+            String selectQuery = "SELECT  * FROM " + tableUser;
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            cursor.moveToFirst();
+            User user = new User(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6));
+            cursor.close();
+            db.close();
+            return user;
+        } else {
+            return null;
+        }
     }
 
-    public void deleteUser() {
+    public void logoutUser() {
         SQLiteDatabase db = this.getWritableDatabase();
-        // Delete All Rows
-        db.delete(tableUser, null, null);
+        String truncateQuery = "TRUNCATE " + tableUser;
+        db.execSQL(truncateQuery);
         db.close();
+        prefs.edit().putBoolean("loggedIn", false).apply();
     }
 
 }

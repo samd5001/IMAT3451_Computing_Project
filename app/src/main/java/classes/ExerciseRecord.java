@@ -1,48 +1,73 @@
 package classes;
 
 
-import java.util.ArrayList;
-import java.util.Date;
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import wrappers.DateTimeWrapper;
 
 public class ExerciseRecord {
-    private int exerciseID;
-    private int workoutID;
-    private Date date;
-    private ArrayList<Set> sets;
+    private String exerciseName;
+    private String planName;
+    private String time;
+    private String sets;
 
-    public ExerciseRecord(int exerciseID) {
-        this.exerciseID = exerciseID;
-        this.date = new Date();
-        this.sets = new ArrayList<>();
+    public ExerciseRecord(String exerciseName, String sets) {
+        this.exerciseName = exerciseName;
+        this.planName = "";
+        this.time = new DateTimeWrapper().sqlReady();
+        this.sets = "";
     }
 
-    public ExerciseRecord(int exerciseID, int workoutID) {
-        this.exerciseID = exerciseID;
-        this.workoutID = workoutID;
-        this.date = new Date();
-        this.sets = new ArrayList<>();
+    public ExerciseRecord(String exerciseName, String planName, String sets) {
+        this.exerciseName = exerciseName;
+        this.planName = planName;
+        this.time = new DateTimeWrapper().sqlReady();
+        this.sets = "";
     }
 
-    public ExerciseRecord(int exerciseID, int workoutID, String date, String sets) {
-        this.exerciseID = exerciseID;
-        this.workoutID = workoutID;
-        this.date = new Date();
-        this.sets = new ArrayList<>();
+    public ExerciseRecord(String exerciseName, String planName, String time, String sets) {
+        this.exerciseName = exerciseName;
+        this.planName = planName;
+        this.time = time;
+        this.sets = sets;
     }
 
-    public int getExerciseID() {
-        return exerciseID;
+    public void addFirstSet(String set) {
+        sets = "[" + set;
     }
 
-    public int getWorkoutID() {
-        return workoutID;
+    public void addSet(String set) {
+        sets = sets + ", " + set;
     }
 
-    public Date getDate() {
-        return date;
+    public void addLastSet(String set) {
+        sets = sets + ", " + set + "]";
     }
 
-    public ArrayList getSets() {
+    public String getExerciseName() {
+        return exerciseName;
+    }
+
+    public String getPlanName() {
+        return planName;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public String getSets() {
+        return sets;
+    }
+
+    public JSONArray getSetsJSON() {
+        JSONArray sets = null;
+        try {
+            sets = new JSONArray(this.sets);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return sets;
     }
 }

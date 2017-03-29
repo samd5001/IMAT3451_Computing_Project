@@ -1,17 +1,25 @@
 package classes;
 
 
-import java.util.ArrayList;
-
 public class Day {
+    private String planName;
     private int dayNumber;
-    private int daysAfter;
-    private ArrayList exercises;
+    private String exercises;
+    private String sets;
 
-    public Day(int dayNumber, int daysAfter, ArrayList exercises) {
+    public Day(String planName, int dayNumber, String exercises, String sets) {
+        this.planName = planName;
         this.dayNumber = dayNumber;
-        this.daysAfter = daysAfter;
         this.exercises = exercises;
+        this.sets = sets;
+    }
+
+    public String getPlanName() {
+        return planName;
+    }
+
+    public void setPlanName(String planName) {
+        this.planName = planName;
     }
 
     public int getDayNumber() {
@@ -22,19 +30,19 @@ public class Day {
         this.dayNumber = dayNumber;
     }
 
-    public int getDaysAfter() {
-        return daysAfter;
-    }
-
-    public void setDaysAfter(int daysAfter) {
-        this.daysAfter = daysAfter;
-    }
-
-    public ArrayList getExercises() {
+    public String getExercises() {
         return exercises;
     }
 
-    public void setExercises(ArrayList exercises) {
+    public void setExercises(String exercises) {
         this.exercises = exercises;
+    }
+
+    public String getSets() {
+        return sets;
+    }
+
+    public void setSets(String sets) {
+        this.sets = sets;
     }
 }

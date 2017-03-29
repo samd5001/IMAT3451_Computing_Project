@@ -33,24 +33,15 @@ public class Set {
 
     }
 
-    public String toJson() {
+    public String toJSONString() {
         JSONObject json = new JSONObject();
         try {
             json.put("reps", reps);
-            json.put("time", reps);
+            json.put("time", time);
             json.put("weight", weight);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return json.toString();
-    }
-
-    @Override
-    public String toString() {
-        return "Set{" +
-                "reps=" + reps +
-                ", time=" + time +
-                ", weight=" + weight +
-                '}';
     }
 }

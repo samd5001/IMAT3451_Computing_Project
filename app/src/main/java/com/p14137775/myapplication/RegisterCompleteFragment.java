@@ -48,7 +48,7 @@ public class RegisterCompleteFragment extends Fragment {
     }
 
     public void onViewCreated(View view, Bundle savedInstance) {
-        db = new SQLiteUserWrapper(getActivity().getApplicationContext());
+        db = new SQLiteUserWrapper(getActivity().getApplicationContext(), getActivity().getSharedPreferences("preferences", MODE_PRIVATE));
         final EditText nameText = (EditText) view.findViewById(R.id.editText);
         final EditText heightText = (EditText) view.findViewById(R.id.editText2);
         final EditText weightText = (EditText) view.findViewById(R.id.editText3);
