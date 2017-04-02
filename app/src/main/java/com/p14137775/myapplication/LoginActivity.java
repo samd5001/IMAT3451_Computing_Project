@@ -20,13 +20,14 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import wrappers.SQLiteUserWrapper;
+import classes.User;
+import wrappers.SQLWrapper;
 import wrappers.URLWrapper;
 import wrappers.VolleyWrapper;
 
 
 public class LoginActivity extends AppCompatActivity {
-    private SQLiteUserWrapper db;
+    private SQLWrapper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +41,7 @@ public class LoginActivity extends AppCompatActivity {
         final TextView register = (TextView) findViewById(R.id.textView4);
         final TextView forgot = (TextView) findViewById(R.id.textView3);
 
-        // SQLite database handler
-        db = new SQLiteUserWrapper(getApplicationContext(), getSharedPreferences("preferences", MODE_PRIVATE));
+        db = new SQLWrapper(getApplicationContext(), getSharedPreferences("preferences", MODE_PRIVATE));
 
         login.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -83,11 +83,17 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onResume () {
+        super.onResume();
+        if (getSharedPreferences("preferences", MODE_PRIVATE).getBoolean("loggedIn", false)) {
+            finish();
+        }
+    }
+
 
 
     private void remoteLogin(final String email, final String password) {
-        String tag_string_req = "req_login";
-
         StringRequest strReq = new StringRequest(Request.Method.POST,
                 URLWrapper.loginURL, new Response.Listener<String>() {
 
@@ -98,15 +104,11 @@ public class LoginActivity extends AppCompatActivity {
                     boolean error = jObj.getBoolean("error");
 
                     if (!error) {
-                        JSONObject user = jObj.getJSONObject("user");
-                        String email = user.getString("email");
-                        String name = user.getString("name");
-                        String dob = user.getString("dob");
-                        String gender = user.getString("gender");
-                        String height = user.getString("height");
-                        String weight = user.getString("weight");
-                        String goal = user.getString("goal");
-                        db.storeUser(name, email, dob, gender, height, weight, goal);
+                        getSharedPreferences("preferences", MODE_PRIVATE).edit().putBoolean("loggedIn", true).apply();
+                        jObj = jObj.getJSONObject("user");
+                        User user = new User(jObj.getString("email"), jObj.getString("name"), jObj.getString("dob"), jObj.getInt("gender"), jObj.getDouble("height"), jObj.getDouble("weight"), jObj.getInt("goal"), jObj.getInt("units"));
+                        db.loginUser(user);
+                        finish();
 
                     } else {
                         String message = jObj.getString("message");
@@ -115,7 +117,6 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -123,24 +124,19 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_LONG).show();
+                error.printStackTrace();
             }
         }) {
 
             @Override
             protected Map<String, String> getParams() {
-                // Posting parameters to login url
                 Map<String, String> params = new HashMap<>();
                 params.put("email", email);
                 params.put("password", password);
 
                 return params;
             }
-
         };
-
-        // Adding request to request queue
-        VolleyWrapper.getInstance().addToRequestQueue(strReq, tag_string_req);
+        VolleyWrapper.getInstance().addToRequestQueue(strReq);
     }
 }

@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="1">
+    android:gravity="center_horizontal"
+    android:weightSum="1" >
+    <LinearLayout
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1">
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
             android:gravity="center"
             android:textSize="22sp"/>
-
-        <com.android.volley.toolbox.NetworkImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -32,7 +34,7 @@
                 app:srcCompat="@android:drawable/ic_menu_add" />
 
             <ImageView
-                android:id="@+id/imageView5"
+                android:id="@+id/imageView2"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:contentDescription="@string/delete_set"
@@ -53,3 +55,4 @@
 
 
     </LinearLayout>
+</ScrollView>

@@ -21,12 +21,13 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import classes.PasswordValidator;
 import wrappers.URLWrapper;
 import wrappers.VolleyWrapper;
 
 public class RegisterBeginFragment extends Fragment {
 
-    private OnButtonClicked mCallback;
+    private OnRegisterBegin mCallback;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -48,12 +49,24 @@ public class RegisterBeginFragment extends Fragment {
             String password2 = password2Text.getText().toString().trim();
             if (!email.isEmpty() && !password.isEmpty()) {
                 if (email.equals(email2)) {
-                    if (password.equals(password2)) {
-                        checkUser(email, password);
+                    if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                        if (password.equals(password2)) {
+                            if (new PasswordValidator().validate(password)) {
+                                checkUser(email, password);
+                            } else {
+                                Toast.makeText(getActivity().getApplicationContext(),
+                                        "Password must be greater than 8 characters, less than 15 characters and contain a number",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            Toast.makeText(getActivity().getApplicationContext(),
+                                    "Passwords do not match", Toast.LENGTH_SHORT)
+                                    .show();
+                        }
                     } else {
                         Toast.makeText(getActivity().getApplicationContext(),
-                            "Passwords do not match", Toast.LENGTH_SHORT)
-                            .show();
+                                "Email is not valid", Toast.LENGTH_SHORT)
+                                .show();
                     }
                 } else {
                     Toast.makeText(getActivity().getApplicationContext(),
@@ -73,21 +86,15 @@ public class RegisterBeginFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnButtonClicked) {
-            mCallback = (OnButtonClicked) context;
+        if (context instanceof OnRegisterBegin) {
+            mCallback = (OnRegisterBegin) context;
         } else {
             throw new ClassCastException(context.toString()
                     + " must implement RegisterBeginFragment.OnButtonClick");
         }
     }
 
-    interface OnButtonClicked {
-        void onButtonClicked(String email, String password);
-    }
-
     private void checkUser (final String email, final String password) {
-        String requestTag = "req_check";
-
         StringRequest request = new StringRequest(Method.POST,
                 URLWrapper.checkUserURL, new Response.Listener<String>() {
 
@@ -100,7 +107,7 @@ public class RegisterBeginFragment extends Fragment {
                     if (!error) {
                         Toast.makeText(getActivity().getApplicationContext(), "Email is already registered", Toast.LENGTH_LONG).show();
                     } else {
-                        mCallback.onButtonClicked(email, password);
+                        mCallback.onRegisterBegin(email, password);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -124,6 +131,10 @@ public class RegisterBeginFragment extends Fragment {
             }
 
         };
-        VolleyWrapper.getInstance().addToRequestQueue(request, requestTag);
+        VolleyWrapper.getInstance().addToRequestQueue(request);
+    }
+
+    interface OnRegisterBegin {
+        void onRegisterBegin(String email, String password);
     }
 }

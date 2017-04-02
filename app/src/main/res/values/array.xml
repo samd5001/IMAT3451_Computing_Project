@@ -7,6 +7,12 @@
 
     <string-array name="unitsValues">
         <item>1</item>
-        <item>2</item>
+        <item>0</item>
+    </string-array>
+
+    <string-array name="type_array">
+        <item>Free Weight</item>
+        <item>Body Weight </item>
+        <item>Machine</item>
     </string-array>
 </resources>

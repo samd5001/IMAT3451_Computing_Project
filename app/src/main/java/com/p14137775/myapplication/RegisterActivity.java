@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 public class RegisterActivity extends AppCompatActivity
-        implements RegisterBeginFragment.OnButtonClicked, RegisterCompleteFragment.OnRegisterComplete {
+        implements RegisterBeginFragment.OnRegisterBegin, RegisterCompleteFragment.OnRegisterComplete {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,7 +24,7 @@ public class RegisterActivity extends AppCompatActivity
         finish();
     }
 
-    public void onButtonClicked(String email, String password) {
+    public void onRegisterBegin(String email, String password) {
         RegisterCompleteFragment completeFragment = new RegisterCompleteFragment();
         Bundle args = new Bundle();
         args.putString("email", email);

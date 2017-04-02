@@ -26,7 +26,7 @@ public class DateTimeWrapper {
     }
 
     public String sqlReady() {
-        String date = this.year + "/" + makeTen(this.month) + "/" + makeTen(this.day);
+        String date = this.year + "-" + makeTen(this.month) + "-" + makeTen(this.day);
         if (hour < 0) {
             return date;
         } else {

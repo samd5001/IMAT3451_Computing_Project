@@ -21,6 +21,17 @@ public class Exercise {
         this.userMade = userMade;
     }
 
+    public Exercise(String name, String description, int type, String areas) {
+        this.name = name;
+        this.description = description;
+        this.type = type;
+        this.imageURL = "http://86.1.54.2/media/noimage.png";
+        this.minThreshold = 1;
+        this.maxThreshold = 1000;
+        this.areasWorked = areas;
+        this.userMade = true;
+    }
+
     public String getName() {
         return name;
     }

@@ -26,8 +26,9 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import classes.User;
 import wrappers.DateTimeWrapper;
-import wrappers.SQLiteUserWrapper;
+import wrappers.SQLWrapper;
 import wrappers.URLWrapper;
 import wrappers.VolleyWrapper;
 
@@ -36,19 +37,20 @@ import static android.content.Context.MODE_PRIVATE;
 public class RegisterCompleteFragment extends Fragment {
     private String email;
     private String password;
-    private int goal;
     private OnRegisterComplete mCallback;
-    private SQLiteUserWrapper db;
+    private SQLWrapper db;
+    private SharedPreferences prefs;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         email = getArguments().getString("email");
         password = getArguments().getString("password");
+        prefs = getActivity().getSharedPreferences("preferences", MODE_PRIVATE);
         return inflater.inflate(R.layout.fragment_registercomplete, parent, false);
     }
 
     public void onViewCreated(View view, Bundle savedInstance) {
-        db = new SQLiteUserWrapper(getActivity().getApplicationContext(), getActivity().getSharedPreferences("preferences", MODE_PRIVATE));
+        db = new SQLWrapper(getActivity().getApplicationContext(), getActivity().getSharedPreferences("preferences", MODE_PRIVATE));
         final EditText nameText = (EditText) view.findViewById(R.id.editText);
         final EditText heightText = (EditText) view.findViewById(R.id.editText2);
         final EditText weightText = (EditText) view.findViewById(R.id.editText3);
@@ -67,22 +69,22 @@ public class RegisterCompleteFragment extends Fragment {
                     builder.setItems(goals, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int selectedGoal) {
-                            goal = selectedGoal;
 
-                            float height = 0, weight = 0;
+                            double height = 0, weight = 0;
                             if (!heightText.getText().toString().isEmpty()) {
-                                height = Float.valueOf(heightText.getText().toString().trim());
+                                height = Double.valueOf(heightText.getText().toString().trim());
                             }
                             if (!weightText.getText().toString().isEmpty()) {
-                                weight = Float.valueOf(weightText.getText().toString().trim());
+                                weight = Double.valueOf(weightText.getText().toString().trim());
                             }
                             int genderId = genderGroup.getCheckedRadioButtonId();
                             View selectedGender = genderGroup.findViewById(genderId);
                             int gender = genderGroup.indexOfChild(selectedGender);
                             DateTimeWrapper date = new DateTimeWrapper(datePicker.getYear(), (datePicker.getMonth() + 1), datePicker.getDayOfMonth());
                             String dob = date.sqlReady();
-                            registerUser(email, password, name, dob, gender, height, weight, goal);
-                            mCallback.onRegisterComplete();
+                            User user = new User(email, name, dob, gender, height, weight, selectedGoal, 1);
+                            db.loginUser(user);
+                            registerUser(user);
                             }
                         });
                     builder.show();
@@ -111,10 +113,7 @@ public class RegisterCompleteFragment extends Fragment {
         void onRegisterComplete();
     }
 
-    private void registerUser(final String email, final String password, final String name,
-                              final String dob, final int gender, final float height, final float weight, final int goal) {
-        String requestTag = "req_register";
-
+    private void registerUser(final User user) {
         StringRequest request = new StringRequest(Method.POST,
                 URLWrapper.registerURL, new Response.Listener<String>() {
 
@@ -125,18 +124,9 @@ public class RegisterCompleteFragment extends Fragment {
                     JSONObject jObj = new JSONObject(response);
                     boolean error = jObj.getBoolean("error");
                     if (!error) {
-                        JSONObject user = jObj.getJSONObject("user");
-                        String email = user.getString("email");
-                        String name = user.getString("name");
-                        String dob = user.getString("dob");
-                        String gender = user.getString("gender");
-                        String height = user.getString("height");
-                        String weight = user.getString("weight");
-                        String goal = user.getString("goal");
-                        db.storeUser(name, email, dob, gender, height, weight, goal);
-                        SharedPreferences prefs = getActivity().getSharedPreferences("preferences", MODE_PRIVATE);
                         prefs.edit().putBoolean("loggedIn", true).apply();
                         Toast.makeText(getActivity().getApplicationContext(), "Account created. You have been logged in", Toast.LENGTH_LONG).show();
+                        mCallback.onRegisterComplete();
                     } else {
                         String errorMsg = jObj.getString("message");
                         Toast.makeText(getActivity().getApplicationContext(),
@@ -158,23 +148,20 @@ public class RegisterCompleteFragment extends Fragment {
 
             @Override
             protected Map<String, String> getParams() {
-                // Posting params to register url
                 Map<String, String> params = new HashMap<>();
-                params.put("email", email);
+                params.put("email", user.getEmail());
                 params.put("password", password);
-                params.put("name", name);
-                params.put("dob", dob);
-                params.put("gender", String.valueOf(gender));
-                params.put("height", String.valueOf(height));
-                params.put("weight", String.valueOf(weight));
-                params.put("goal", String.valueOf(goal));
-
+                params.put("name", user.getName());
+                params.put("dob", user.getDob());
+                params.put("gender", String.valueOf(user.getGender()));
+                params.put("height", String.valueOf(user.getHeight()));
+                params.put("weight", String.valueOf(user.getWeight()));
+                params.put("goal", String.valueOf(user.getGoal()));
+                params.put("units", String.valueOf(user.getUnits()));
                 return params;
             }
 
         };
-
-        // Adding request to request queue
-        VolleyWrapper.getInstance().addToRequestQueue(request, requestTag);
+        VolleyWrapper.getInstance().addToRequestQueue(request);
     }
 }

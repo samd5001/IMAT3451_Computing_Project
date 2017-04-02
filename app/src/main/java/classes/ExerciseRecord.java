@@ -7,42 +7,40 @@ import org.json.JSONException;
 import wrappers.DateTimeWrapper;
 
 public class ExerciseRecord {
+    private int id;
     private String exerciseName;
     private String planName;
+    private int dayNum;
     private String time;
     private String sets;
 
     public ExerciseRecord(String exerciseName, String sets) {
         this.exerciseName = exerciseName;
         this.planName = "";
+        this.dayNum = 0;
         this.time = new DateTimeWrapper().sqlReady();
-        this.sets = "";
+        this.sets = sets;
     }
 
-    public ExerciseRecord(String exerciseName, String planName, String sets) {
+    public ExerciseRecord(String exerciseName, String planName, int dayNum, String sets) {
         this.exerciseName = exerciseName;
         this.planName = planName;
+        this.dayNum = dayNum;
         this.time = new DateTimeWrapper().sqlReady();
-        this.sets = "";
+        this.sets = sets;
     }
 
-    public ExerciseRecord(String exerciseName, String planName, String time, String sets) {
+    public ExerciseRecord(int id, String exerciseName, String planName, int dayNum, String time, String sets) {
+        this.id = id;
         this.exerciseName = exerciseName;
         this.planName = planName;
+        this.dayNum = dayNum;
         this.time = time;
         this.sets = sets;
     }
 
-    public void addFirstSet(String set) {
-        sets = "[" + set;
-    }
-
-    public void addSet(String set) {
-        sets = sets + ", " + set;
-    }
-
-    public void addLastSet(String set) {
-        sets = sets + ", " + set + "]";
+    public int getId() {
+        return id;
     }
 
     public String getExerciseName() {
@@ -51,6 +49,10 @@ public class ExerciseRecord {
 
     public String getPlanName() {
         return planName;
+    }
+
+    public int getDayNum() {
+        return dayNum;
     }
 
     public String getTime() {
@@ -69,5 +71,9 @@ public class ExerciseRecord {
             e.printStackTrace();
         }
         return sets;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

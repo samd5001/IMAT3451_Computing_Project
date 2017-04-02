@@ -63,19 +63,14 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                         StringRequest emailRequest = new StringRequest(Method.POST, URLWrapper.resetPasswordURL, new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
-                                if (response.equals("email sent.")) {
-                                    Toast.makeText(getApplicationContext(), "Email sent", Toast.LENGTH_SHORT).show();
-                                    finish();
-                                } else {
-                                    Toast.makeText(getApplicationContext(), "Unknown error", Toast.LENGTH_SHORT).show();
-                                }
+                                Toast.makeText(getApplicationContext(), "Email sent", Toast.LENGTH_SHORT).show();
+                                finish();
                             }
                         } , new Response.ErrorListener() {
 
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                Toast.makeText(getApplicationContext(),
-                                        error.getMessage(), Toast.LENGTH_LONG).show();
+                                error.printStackTrace();
                             }
                         }) {
 
@@ -87,7 +82,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                             }
 
                         };
-                        VolleyWrapper.getInstance().addToRequestQueue(emailRequest, "reqemail");
+                        VolleyWrapper.getInstance().addToRequestQueue(emailRequest);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -111,6 +106,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             }
 
         };
-        VolleyWrapper.getInstance().addToRequestQueue(request, "reqcheck");
+        VolleyWrapper.getInstance().addToRequestQueue(request);
     }
 }

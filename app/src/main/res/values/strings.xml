@@ -15,7 +15,7 @@
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="height">Height (Metres)</string>
-    <string name="weight">Weight (KG)</string>
+    <string name="weight">Weight</string>
     <string name="complete_reg">Complete Registration</string>
     <string name="settings">Settings</string>
     <string name="area">Select an area</string>
@@ -30,4 +30,33 @@
     <string name="reset">You\'ll receive an email with a link to reset your account</string>
     <string name="sendpassword">Send Reset Email</string>
     <string name="reps">Reps</string>
+    <string name="kilo">kg</string>
+    <string name="plan">Select a plan</string>
+    <string name="exerciseWelcome">This is the exercise tracking screen. Here you\'ll find all the exercises
+    in our database along with an easy facility to track them. You can add your own too!</string>
+    <string name="planWelcome">Here you\'ll find a selection of workout plans that you can try out.
+    if none of them take your fancy you can always create your own from the exercise database.</string>
+    <string name="historyWelcome">Finally this is the history screen you can see all the records
+        you\'ve made as well as some pointers on how to improve!</string>
+    <string name="next">Next</string>
+    <string name="exercise_name">Exercise Name</string>
+    <string name="areas_worked">Areas Worked</string>
+    <string name="chest">Chest</string>
+    <string name="arms">Arms</string>
+    <string name="legs">Legs</string>
+    <string name="core">Core</string>
+    <string name="back">Back</string>
+    <string name="shoulders">Shoulders</string>
+    <string name="type">Type</string>
+    <string name="description">Description</string>
+    <string name="save_exercise">Save exercise</string>
+    <string name="finish">Finish</string>
+    <string name="selectplan">Select a plan!</string>
+    <string name="browse">Click the button to browse the plans</string>
+    <string name="nextday">Click begin to start the next day in your plan, or you can search for a new plan</string>
+    <string name="tap_day_to_start">Tap day to start</string>
+    <string name="exercises_in_this_day">Exercises in this day</string>
+    <string name="search_button">search button</string>
+    <string name="delete_button">Delete button</string>
+    <string name="select_a_category_of_record_to_browse">Select a category of record to browse</string>
 </resources>

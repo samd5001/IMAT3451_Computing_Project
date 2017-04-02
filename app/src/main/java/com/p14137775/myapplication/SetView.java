@@ -4,34 +4,33 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class SetView extends LinearLayout {
+import org.json.JSONException;
+import org.json.JSONObject;
 
-    View view;
-    TextView setNum;
-    EditText reps;
-    EditText weight;
+public class SetView extends LinearLayout {
+    private TextView setNum;
+    private EditText reps;
+    private EditText weight;
 
     public SetView(Context context) {
         super(context);
-
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_setview, this);
+        LayoutInflater.from(getContext()).inflate(R.layout.layout_setview, this);
+        init();
     }
 
     public SetView(Context context, AttributeSet attrs) {
         super (context, attrs);
-        
+        init();
     }
 
-    private void init(Context context) {
-        view = inflate(context, R.layout.layout_setview, this);
-        setNum = (TextView) view.findViewById(R.id.set);
-        reps = (EditText) view.findViewById(R.id.reps);
-        weight = (EditText) view.findViewById(R.id.weight);
+    private void init() {
+        setNum = (TextView) findViewById(R.id.set);
+        reps = (EditText) findViewById(R.id.reps);
+        weight = (EditText) findViewById(R.id.weight);
     }
 
 
@@ -40,21 +39,42 @@ public class SetView extends LinearLayout {
         setNum.setText("Set " + num);
     }
 
-    public void setFields(boolean type) {
-        if (type) {
-            reps.setHint("Reps");
-            weight.setHint("Weight");
+    public void setWeightReps (double weight, int reps) {
+        this.weight.setText(String.valueOf(weight));
+        this.reps.setText(String.valueOf(reps));
+    }
+
+    public String getSets() {return setNum.getText().toString().trim();}
+
+    public float getReps() {
+        if (!reps.getText().toString().isEmpty()) {
+            return Float.valueOf(reps.getText().toString().trim());
+        } else
+            return 0;
+    }
+
+    public float getWeight() {
+        if (!weight.getText().toString().isEmpty()) {
+            return Float.valueOf(weight.getText().toString().trim());
+        } else {
+            return 0;
         }
     }
 
-    public int getReps() {
-        return Integer.valueOf(reps.getText().toString().trim());
+
+    public void setReps(int reps) {
+        this.reps.setText(String.valueOf(reps));
     }
 
-    public int getWeight() {
-        return Integer.valueOf(weight.getText().toString().trim());
+    public JSONObject getJSON() {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("reps", reps.getText().toString().trim());
+            json.put("time", 0);
+            json.put("weight", weight.getText().toString().trim());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json;
     }
-
-
-
 }

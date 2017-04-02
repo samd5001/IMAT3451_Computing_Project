@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:weightSum="1"
+    android:background="@color/colorPrimaryHighlight">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+        <EditText
+            android:id="@+id/ename"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="10dp"
+            android:hint="@string/exercise_name"
+            android:inputType="text"
+            android:textColor="@color/colorTextDark"
+            android:textColorHint="@color/colorTextDark" />
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="-80dp"
+            android:text="@string/areas_worked"
+            android:textColor="@color/colorTextDark"
+            android:textSize="16sp" />
+
+        <RelativeLayout
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/planbox">
+
+            <CheckBox
+                android:id="@+id/chest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:text="@string/chest" />
+
+            <CheckBox
+                android:id="@+id/arms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="13dp"
+                android:layout_toEndOf="@+id/chest"
+                android:text="@string/arms" />
+
+            <CheckBox
+                android:id="@+id/legs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="26dp"
+                android:layout_toEndOf="@+id/arms"
+                android:text="@string/legs" />
+
+            <CheckBox
+                android:id="@+id/core"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/core"
+                android:layout_below="@+id/chest"
+                android:layout_alignParentStart="true" />
+
+            <CheckBox
+                android:id="@+id/back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/arms"
+                android:layout_below="@+id/arms"
+                android:text="@string/back" />
+
+            <CheckBox
+                android:id="@+id/shoulders"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/legs"
+                android:layout_below="@+id/legs"
+                android:text="@string/shoulders" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="-115dp"
+            android:layout_marginTop="10sp"
+            android:text="@string/type"
+            android:textSize="16sp"
+            android:textColor="@color/colorTextDark"/>
+
+        <Spinner
+            android:id="@+id/type"
+            android:entries="@array/type_array"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="-30dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="-90dp"
+            android:text="@string/description"
+            android:textSize="16sp"
+            android:textColor="@color/colorTextDark"/>
+
+
+        <EditText
+            android:id="@+id/description"
+            android:layout_width="280dp"
+            android:layout_height="100dp"
+            android:background="@drawable/planbox"
+            android:ems="10"
+            android:textColor="@color/colorTextDark"
+            android:inputType="textMultiLine"
+            android:gravity="start"
+            tools:ignore="LabelFor" />
+
+        <Button
+            android:id="@+id/save"
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="@string/save_exercise"
+            android:textColor="@color/colorTextLight"
+            android:textSize="18sp"
+            android:textAppearance="@android:style/TextAppearance.Material.Body1"
+            android:backgroundTint="@color/colorPrimary" />
+    </LinearLayout>
+</ScrollView>

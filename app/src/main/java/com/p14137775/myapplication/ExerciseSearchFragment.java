@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public class ExerciseSearchFragment extends Fragment {
 
         final ListView listView = (ListView) view.findViewById(R.id.listView);
         final EditText search = (EditText) view.findViewById(R.id.editText);
+        final ImageView add = (ImageView) view.findViewById(R.id.add);
         Collections.sort(exercises);
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity().getApplicationContext(), R.layout.layout_exerciseitem, R.id.textView, exercises);
         listView.setAdapter(adapter);
@@ -50,11 +52,19 @@ public class ExerciseSearchFragment extends Fragment {
 
             }
         });
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             String name = (String) listView.getItemAtPosition(position);
             mCallback.onExerciseSelected(name);
+            }
+        });
+
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCallback.onExerciseAdd();
             }
         });
     }
@@ -71,6 +81,7 @@ public class ExerciseSearchFragment extends Fragment {
 
     interface OnExerciseSelected {
         void onExerciseSelected(String name);
+        void onExerciseAdd();
     }
 }
 

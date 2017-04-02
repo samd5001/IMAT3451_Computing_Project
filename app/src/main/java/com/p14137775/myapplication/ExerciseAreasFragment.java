@@ -31,6 +31,12 @@ public class ExerciseAreasFragment extends Fragment{
                 mCallback.onAreaSelected(area);
             }
         });
+        view.findViewById(R.id.add).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCallback.onExerciseAdd();
+            }
+        });
     }
 
     public void onAttach(Context context) {
@@ -45,5 +51,6 @@ public class ExerciseAreasFragment extends Fragment{
 
     interface OnAreaSelected {
         void onAreaSelected(String area);
+        void onExerciseAdd();
     }
 }

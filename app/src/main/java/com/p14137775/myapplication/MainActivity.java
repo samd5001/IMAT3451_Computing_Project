@@ -17,45 +17,49 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import classes.Day;
 import classes.Exercise;
+import classes.Plan;
 import classes.User;
-import wrappers.SQLDataWrapper;
-import wrappers.SQLiteUserWrapper;
+import wrappers.SQLWrapper;
 
-public class MainActivity extends AppCompatActivity implements ExerciseAreasFragment.OnAreaSelected, ExerciseSearchFragment.OnExerciseSelected, ExerciseDetailsFragment.OnBegin, ExerciseTrackFragment.OnComplete {
+public class MainActivity extends AppCompatActivity implements ExerciseAreasFragment.OnAreaSelected,
+        ExerciseSearchFragment.OnExerciseSelected, ExerciseDetailsFragment.OnDetail,
+        ExerciseTrackFragment.OnComplete, PlanSearchFragment.OnPlanSelected, WelcomeFragment.OnWelcomeComplete,
+        ExerciseCreateFragment.OnCreateExercise, PlanDetailsFragment.OnPlanBegin, PlanCurrentFragment.OnCurrentSelect {
 
-    ExerciseFragment exerciseFragment;
-    ExerciseFragment workoutFragment;
-    ExerciseFragment historyFragment;
-    User user;
-    Exercise exercise;
-    SQLDataWrapper db;
-    ViewPagerAdapter adapter;
-    SharedPreferences prefs;
+    private ExerciseFragment exerciseFragment;
+    private PlanFragment planFragment;
+    private HistoryFragment historyFragment;
+    private User user;
+    private Exercise exercise;
+    private Plan plan;
+    private Day day;
+    private SQLWrapper db;
+    private TabLayout tabs;
+    private ViewPagerAdapter adapter;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         prefs = getSharedPreferences("preferences", MODE_PRIVATE);
-
-        if (prefs.getBoolean("firstRun", true)) {
-            startActivity(new Intent(MainActivity.this, LoginActivity.class));
-            prefs.edit().putBoolean("firstRun", false).apply();
-            prefs.edit().putBoolean("loggedIn", false).apply();
-        }
-        exerciseFragment = new ExerciseFragment();
-        workoutFragment = new ExerciseFragment();
-        historyFragment = new ExerciseFragment();
-        db = new SQLDataWrapper(getApplicationContext());
+        db = new SQLWrapper(getApplicationContext(), prefs);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_dumbbell);
-        TabLayout tabs = (TabLayout) findViewById(R.id.tabLayout);
+        tabs = (TabLayout) findViewById(R.id.tabLayout);
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
-
+        viewPager.setOffscreenPageLimit(3);
+        exerciseFragment = new ExerciseFragment();
+        planFragment = new PlanFragment();
+        historyFragment = new HistoryFragment();
         setSupportActionBar(toolbar);
         setupViewPager(viewPager);
         tabs.setupWithViewPager(viewPager);
+        if (prefs.getBoolean("firstRun", true)) {
+            prefs.edit().putBoolean("loggedIn", false).apply();
+        }
     }
 
     @Override
@@ -88,15 +92,26 @@ public class MainActivity extends AppCompatActivity implements ExerciseAreasFrag
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+
+    }
+
     private void setupViewPager(ViewPager viewPager) {
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.add("Track", exerciseFragment);
-        adapter.add("Plans", workoutFragment);
+        adapter.add("Plans", planFragment);
         adapter.add("History", historyFragment);
         viewPager.setAdapter(adapter);
     }
 
-    public SQLDataWrapper getDb() {
+    public void incrementTab() {
+        if (tabs.getSelectedTabPosition() < tabs.getTabCount() - 1) {
+            tabs.getTabAt(tabs.getSelectedTabPosition() + 1).select();
+        }
+    }
+
+    public SQLWrapper getDb() {
         return db;
     }
 
@@ -108,16 +123,24 @@ public class MainActivity extends AppCompatActivity implements ExerciseAreasFrag
         return exercise;
     }
 
+    public Plan getPlan() {
+        return plan;
+    }
+
+    public SharedPreferences getPrefs() {
+        return prefs;
+    }
+
     @Override
     public void onAreaSelected(String area) {
-        user = new SQLiteUserWrapper(getApplicationContext(), prefs).getUser();
+        user = new SQLWrapper(getApplicationContext(), prefs).getUser();
         ArrayList<String> exercises = db.getExerciseList(area);
         if (!exercises.isEmpty()) {
             ExerciseSearchFragment searchFragment = new ExerciseSearchFragment();
             Bundle args = new Bundle();
             args.putStringArrayList("exercises", exercises);
             searchFragment.setArguments(args);
-            exerciseFragment.getChildFragmentManager().beginTransaction()
+            exerciseFragment.getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom)
                     .replace(R.id.placeholder, searchFragment, "exerciseSearch").addToBackStack(null).commit();
         } else Toast.makeText(getApplicationContext(),
                 "Loading database. Please wait and try again (An internet connection is required for initial setup", Toast.LENGTH_LONG).show();
@@ -127,18 +150,88 @@ public class MainActivity extends AppCompatActivity implements ExerciseAreasFrag
     public void onExerciseSelected(String name) {
         exercise = db.getExercise(name);
         ExerciseDetailsFragment detailsFragment = new ExerciseDetailsFragment();
-        exerciseFragment.getChildFragmentManager().beginTransaction()
+        exerciseFragment.getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom)
                 .replace(R.id.placeholder, detailsFragment, "exerciseDetails").addToBackStack(null).commit();
     }
 
     @Override
+    public void onExerciseAdd() {
+        exerciseFragment.getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom)
+                .replace(R.id.placeholder, new ExerciseCreateFragment(), "exerciseCreate").addToBackStack(null).commit();
+    }
+
+    @Override
     public void onBegin() {
-        exerciseFragment.getChildFragmentManager().beginTransaction().replace((R.id.placeholder), new ExerciseTrackFragment(), "exerciseTracking").addToBackStack(null).commit();
+        exerciseFragment.getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom)
+                .replace((R.id.placeholder), new ExerciseTrackFragment(), "exerciseTracking").addToBackStack(null).commit();
+    }
+
+    @Override
+    public void onDelete(Exercise exercise) {
+        exerciseFragment.getChildFragmentManager().popBackStack();
+        exerciseFragment.getChildFragmentManager().popBackStack();
+        Toast.makeText(getApplicationContext(),
+                "Exercise deleted", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onComplete() {
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
+        int position = viewPager.getCurrentItem();
+        int count = adapter.getItem(position).getChildFragmentManager().getBackStackEntryCount() - 1;
+        for (int i = 0; i < count; i++) {
+            adapter.getItem(position).getChildFragmentManager().popBackStack();
+        }
+    }
 
+    @Override
+    public void onWelcomeComplete() {
+        startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        prefs.edit().putBoolean("firstRun", false).apply();
+        exerciseFragment.getChildFragmentManager().beginTransaction()
+                .replace(R.id.placeholder, new ExerciseAreasFragment(), "exerciseAreas").addToBackStack(null).commit();
+        planFragment.getChildFragmentManager().beginTransaction()
+                .replace(R.id.placeholder, new PlanSearchFragment(), "planSearch").addToBackStack(null).commit();
+    }
+
+    @Override
+    public void onCreateExercise() {
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
+        int position = viewPager.getCurrentItem();
+        FragmentManager fm = adapter.getItem(position).getChildFragmentManager();
+        fm.popBackStack();
+        if (fm.getBackStackEntryCount() > 2) {
+            fm.popBackStack();
+        }
+    }
+
+    @Override
+    public void onPlanSelected(Plan plan) {
+        this.plan = plan;
+        planFragment.getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom)
+                .replace(R.id.placeholder, new PlanDetailsFragment(), "planDetails").addToBackStack(null).commit();
+    }
+
+    @Override
+    public void onPlanBegin(Day day) {
+        this.day = day;
+        planFragment.getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom)
+                .replace(R.id.placeholder, new PlanTrackMainFragment(), "planDetails").addToBackStack(null).commit();
+    }
+
+    @Override
+    public void onPlanContinue(Plan plan) {
+        onPlanSelected(plan);
+    }
+
+    @Override
+    public void onBrowse() {
+        planFragment.getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom)
+                .replace(R.id.placeholder, new PlanSearchFragment(), "planSearch").addToBackStack(null).commit();
+    }
+
+    public Day getDay() {
+        return day;
     }
 
     private static class ViewPagerAdapter extends FragmentPagerAdapter {
