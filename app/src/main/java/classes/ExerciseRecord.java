@@ -14,7 +14,7 @@ public class ExerciseRecord {
     private String time;
     private String sets;
 
-    public ExerciseRecord(String exerciseName, String sets) {
+    public ExerciseRecord(int id, String exerciseName, String sets) {
         this.exerciseName = exerciseName;
         this.planName = "";
         this.dayNum = 0;

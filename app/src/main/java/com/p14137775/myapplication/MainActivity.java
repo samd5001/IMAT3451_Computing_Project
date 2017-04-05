@@ -3,6 +3,7 @@ package com.p14137775.myapplication;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,6 +11,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -26,7 +28,8 @@ import wrappers.SQLWrapper;
 public class MainActivity extends AppCompatActivity implements ExerciseAreasFragment.OnAreaSelected,
         ExerciseSearchFragment.OnExerciseSelected, ExerciseDetailsFragment.OnDetail,
         ExerciseTrackFragment.OnComplete, PlanSearchFragment.OnPlanSelected, WelcomeFragment.OnWelcomeComplete,
-        ExerciseCreateFragment.OnCreateExercise, PlanDetailsFragment.OnPlanBegin, PlanCurrentFragment.OnCurrentSelect {
+        ExerciseCreateFragment.OnCreateExercise, PlanDetailsFragment.OnPlanBegin, PlanCurrentFragment.OnCurrentSelect,
+        HistorySearchFragment.OnRecordsSelected, HistoryCategoryFragment.OnCategorySelected {
 
     private ExerciseFragment exerciseFragment;
     private PlanFragment planFragment;
@@ -39,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements ExerciseAreasFrag
     private TabLayout tabs;
     private ViewPagerAdapter adapter;
     private SharedPreferences prefs;
+    private Runnable runnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +63,24 @@ public class MainActivity extends AppCompatActivity implements ExerciseAreasFrag
         tabs.setupWithViewPager(viewPager);
         if (prefs.getBoolean("firstRun", true)) {
             prefs.edit().putBoolean("loggedIn", false).apply();
+            prefs.edit().putBoolean("syncing", false).apply();
         }
+
+        final Handler handler = new Handler();
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (!prefs.getBoolean("syncing", false)) {
+                    db.syncData();
+                }
+                Log.d("Handlers", "Called on main thread");
+                handler.postDelayed(runnable, 300000);
+            }
+
+        };
+        handler.post(runnable);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -73,6 +93,11 @@ public class MainActivity extends AppCompatActivity implements ExerciseAreasFrag
         switch (item.getItemId()) {
             case R.id.settings:
                 startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+            case R.id.sync:
+                if (!prefs.getBoolean("syncing", false)) {
+                    db.syncData();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -90,11 +115,6 @@ public class MainActivity extends AppCompatActivity implements ExerciseAreasFrag
         } else {
             adapter.getItem(position).getChildFragmentManager().popBackStack();
         }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -191,7 +211,9 @@ public class MainActivity extends AppCompatActivity implements ExerciseAreasFrag
         exerciseFragment.getChildFragmentManager().beginTransaction()
                 .replace(R.id.placeholder, new ExerciseAreasFragment(), "exerciseAreas").addToBackStack(null).commit();
         planFragment.getChildFragmentManager().beginTransaction()
-                .replace(R.id.placeholder, new PlanSearchFragment(), "planSearch").addToBackStack(null).commit();
+                .replace(R.id.placeholder, new PlanCurrentFragment(), "planCurrent").addToBackStack(null).commit();
+        historyFragment.getChildFragmentManager().beginTransaction()
+                .replace(R.id.placeholder, new HistoryCategoryFragment(), "planCurrent").addToBackStack(null).commit();
     }
 
     @Override
@@ -232,6 +254,24 @@ public class MainActivity extends AppCompatActivity implements ExerciseAreasFrag
 
     public Day getDay() {
         return day;
+    }
+
+    @Override
+    public void onRecordsSelected(String name) {
+        Bundle args = new Bundle();
+        args.putString("exerciseName", name);
+        HistoryDisplayFragment showFragment = new HistoryDisplayFragment();
+        showFragment.setArguments(args);
+        historyFragment.getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom)
+                .replace(R.id.placeholder, showFragment, "planSearch").addToBackStack(null).commit();
+    }
+
+    @Override
+    public void onCategorySelected(String name) {
+        if (name.equals("Exercises")) {
+            historyFragment.getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom)
+                    .replace(R.id.placeholder, new HistorySearchFragment(), "planSearch").addToBackStack(null).commit();
+        }
     }
 
     private static class ViewPagerAdapter extends FragmentPagerAdapter {

@@ -17,6 +17,5 @@
         android:textSize="16sp"
         android:textColor="@color/colorTextDark"
         android:textAlignment="center"
-        android:padding="10dp"
-        android:text= "THIS DICK"/>
+        android:padding="10dp" />
 </LinearLayout>

@@ -7,19 +7,30 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center_horizontal">
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:textSize="22sp"
-            android:textColor="@color/colorTextDark"/>
 
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:text="@string/tap_day_to_start"
-            android:textColor="@color/colorTextDark"/>
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:background="@drawable/daybox"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:textColor="@color/colorTextDark"
+                android:textSize="22sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="@string/tap_day_to_start"
+                android:textColor="@color/colorTextDark" />
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

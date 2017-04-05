@@ -18,6 +18,7 @@ import classes.Day;
 import classes.ExerciseRecord;
 import classes.Plan;
 import classes.QueryValidator;
+import views.DayView;
 import wrappers.SQLWrapper;
 
 public class PlanDetailsFragment extends Fragment{
@@ -65,7 +66,7 @@ public class PlanDetailsFragment extends Fragment{
             final Day day = db.getDay(plan.getName(), days.getInt(lastDay));
             DayView dayView = new DayView(getActivity().getApplicationContext(), db, day);
             dayView.setGravity(Gravity.CENTER_HORIZONTAL);
-            ((ViewGroup)title.getParent()).addView(dayView);
+            ((ViewGroup)title.getParent().getParent()).addView(dayView);
             dayView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -76,7 +77,7 @@ public class PlanDetailsFragment extends Fragment{
                 Day afterDay = db.getDay(plan.getName(), days.getInt(i));
                 dayView = new DayView(getActivity().getApplicationContext(), db, afterDay);
                 dayView.setGravity(Gravity.CENTER_HORIZONTAL);
-                ((ViewGroup)title.getParent()).addView(dayView);
+                ((ViewGroup)title.getParent().getParent()).addView(dayView);
             }
         } catch (JSONException e) {
             e.printStackTrace();

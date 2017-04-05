@@ -9,7 +9,7 @@ public class PasswordValidator{
     private Matcher matcher;
 
     private static final String PASSWORD_PATTERN =
-            "((?=.*\\d).{8,15})";
+            "((?=.*\\d).{8,16})";
 
     public PasswordValidator(){
         pattern = Pattern.compile(PASSWORD_PATTERN);

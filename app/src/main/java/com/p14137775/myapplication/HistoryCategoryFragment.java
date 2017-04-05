@@ -10,13 +10,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class HistoryTypeFragment extends Fragment{
+public class HistoryCategoryFragment extends Fragment {
 
-    private OnAreaHistorySelected mCallback;
+    private OnCategorySelected mCallback;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_exercisearea, parent, false);
+        return inflater.inflate(R.layout.fragment_historycategory, parent, false);
     }
 
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -27,23 +27,23 @@ public class HistoryTypeFragment extends Fragment{
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String type = (String) listView.getItemAtPosition(position);
-                mCallback.onAreaHistorySelected(type);
+                String category = (String) listView.getItemAtPosition(position);
+                mCallback.onCategorySelected(category);
             }
         });
     }
 
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnAreaHistorySelected) {
-            mCallback = (OnAreaHistorySelected) context;
+        if (context instanceof OnCategorySelected) {
+            mCallback = (OnCategorySelected) context;
         } else {
             throw new ClassCastException(context.toString()
-                    + " must implement ExerciseAreasFragment.OnAreaSelected");
+                    + " must implement OnCategorySelected");
         }
     }
 
-    interface OnAreaHistorySelected {
-        void onAreaHistorySelected(String area);
+    interface OnCategorySelected {
+        void onCategorySelected(String name);
     }
 }

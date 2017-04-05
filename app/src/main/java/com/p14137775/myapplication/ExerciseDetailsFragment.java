@@ -15,7 +15,11 @@ import android.widget.TextView;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 
+import java.util.ArrayList;
+
 import classes.Exercise;
+import classes.ExerciseRecord;
+import views.RecordView;
 import wrappers.SQLWrapper;
 import wrappers.VolleyWrapper;
 
@@ -45,8 +49,8 @@ public class ExerciseDetailsFragment extends Fragment {
             }
         });
         ImageView delete = (ImageView) view.findViewById(R.id.imageView);
+        ViewGroup vg = (ViewGroup) delete.getParent();
         if (!exercise.isUserMade()) {
-            ViewGroup vg = (ViewGroup) delete.getParent();
             vg.removeView(delete);
         } else {
             delete.setOnClickListener(new View.OnClickListener() {
@@ -56,12 +60,18 @@ public class ExerciseDetailsFragment extends Fragment {
                             .setMessage("Are you sure you want to delete this exercise?")
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
-                                    new SQLWrapper(getActivity().getApplicationContext(),getActivity().getSharedPreferences("preferences", Context.MODE_PRIVATE)).deleteExercise(exercise.getName(), String.valueOf(exercise.getType()));
+                                    new SQLWrapper(getActivity().getApplicationContext(),getActivity().getSharedPreferences("preferences", Context.MODE_PRIVATE)).deleteExercise(exercise.getName());
                                     mCallback.onDelete(exercise);
                                 }})
                             .setNegativeButton("No", null).show();
                 }
             });
+        }
+        ArrayList<ExerciseRecord> records = new SQLWrapper(getContext(), getContext().getSharedPreferences("preferences", Context.MODE_PRIVATE)).getLastTwoRecords(exercise.getName());
+        if (!records.isEmpty()) {
+            for (ExerciseRecord record : records) {
+                vg.addView(new RecordView(getContext(), record));
+            }
         }
 
     }

@@ -3,7 +3,6 @@ package com.p14137775.myapplication;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -39,13 +38,11 @@ public class RegisterCompleteFragment extends Fragment {
     private String password;
     private OnRegisterComplete mCallback;
     private SQLWrapper db;
-    private SharedPreferences prefs;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         email = getArguments().getString("email");
         password = getArguments().getString("password");
-        prefs = getActivity().getSharedPreferences("preferences", MODE_PRIVATE);
         return inflater.inflate(R.layout.fragment_registercomplete, parent, false);
     }
 
@@ -82,8 +79,7 @@ public class RegisterCompleteFragment extends Fragment {
                             int gender = genderGroup.indexOfChild(selectedGender);
                             DateTimeWrapper date = new DateTimeWrapper(datePicker.getYear(), (datePicker.getMonth() + 1), datePicker.getDayOfMonth());
                             String dob = date.sqlReady();
-                            User user = new User(email, name, dob, gender, height, weight, selectedGoal, 1);
-                            db.loginUser(user);
+                            User user = new User(email, password, name, dob, gender, height, weight, selectedGoal, 1);
                             registerUser(user);
                             }
                         });
@@ -124,8 +120,8 @@ public class RegisterCompleteFragment extends Fragment {
                     JSONObject jObj = new JSONObject(response);
                     boolean error = jObj.getBoolean("error");
                     if (!error) {
-                        prefs.edit().putBoolean("loggedIn", true).apply();
                         Toast.makeText(getActivity().getApplicationContext(), "Account created. You have been logged in", Toast.LENGTH_LONG).show();
+                        db.loginUser(user);
                         mCallback.onRegisterComplete();
                     } else {
                         String errorMsg = jObj.getString("message");

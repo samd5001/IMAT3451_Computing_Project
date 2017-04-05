@@ -3,6 +3,7 @@ package classes;
 public class User {
 
     private String email;
+    private String password;
     private String name;
     private String dob;
     private int gender;
@@ -11,8 +12,9 @@ public class User {
     private int goal;
     private int units;
 
-    public User(String email, String name, String dob, int gender, double height, double weight, int goal, int units) {
+    public User(String email, String password, String name, String dob, int gender, double height, double weight, int goal, int units) {
         this.email = email;
+        this.password = password;
         this.name = name;
         this.dob = dob;
         this.gender = gender;
@@ -84,5 +86,13 @@ public class User {
 
     public void setUnits(int units) {
         this.units = units;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

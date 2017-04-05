@@ -52,11 +52,13 @@
     <string name="save_exercise">Save exercise</string>
     <string name="finish">Finish</string>
     <string name="selectplan">Select a plan!</string>
-    <string name="browse">Click the button to browse the plans</string>
-    <string name="nextday">Click begin to start the next day in your plan, or you can search for a new plan</string>
+    <string name="browse">Tap the button to browse the plans</string>
+    <string name="nextday">Tap begin to start the next day in your plan, or you can search for a new plan</string>
     <string name="tap_day_to_start">Tap day to start</string>
     <string name="exercises_in_this_day">Exercises in this day</string>
     <string name="search_button">search button</string>
     <string name="delete_button">Delete button</string>
     <string name="select_a_category_of_record_to_browse">Select a category of record to browse</string>
+    <string name="weight_kg">Weight (kg)</string>
+    <string name="no_records_found">No records found</string>
 </resources>

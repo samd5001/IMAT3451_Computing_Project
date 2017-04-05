@@ -26,6 +26,8 @@ public class HistoryFragment extends Fragment {
             args.putBoolean("last", true);
             welcome.setArguments(args);
             getChildFragmentManager().beginTransaction().replace(R.id.placeholder, welcome, "welcome").commitAllowingStateLoss();
-        }
+        } else
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.placeholder, new HistoryCategoryFragment(), "historyCategories").addToBackStack(null).commit();
     }
 }

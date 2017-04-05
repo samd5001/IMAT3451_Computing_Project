@@ -1,10 +1,12 @@
-package com.p14137775.myapplication;
+package views;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.p14137775.myapplication.R;
 
 public class ExerciseView extends LinearLayout {
     private TextView name;

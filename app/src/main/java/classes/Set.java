@@ -11,12 +11,23 @@ public class Set {
     public Set(JSONObject set) {
         try {
             reps = set.getInt("reps");
-            time = set.getLong("time");
-            weight = set.getLong("weight");
+            time = set.getDouble("time");
+            weight = set.getDouble("weight");
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
 
+    public int getReps() {
+        return reps;
+    }
+
+    public double getTime() {
+        return time;
+    }
+
+    public double getWeight() {
+        return weight;
     }
 }

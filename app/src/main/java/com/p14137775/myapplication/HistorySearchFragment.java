@@ -11,27 +11,32 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class ExerciseSearchFragment extends Fragment {
-    private OnExerciseSelected mCallback;
+import wrappers.SQLWrapper;
+
+public class HistorySearchFragment extends Fragment {
+
+    private OnRecordsSelected mCallback;
     ArrayList<String> exercises;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        exercises = getArguments().getStringArrayList("exercises");
-        return inflater.inflate(R.layout.fragment_exercisesearch, parent, false);
+        exercises = new SQLWrapper(getActivity().getApplicationContext(), getContext().getSharedPreferences("preferences", Context.MODE_PRIVATE)).getAllRecordedExerciseList();
+        return inflater.inflate(R.layout.fragment_historysearch, parent, false);
     }
 
     public void onViewCreated(View view, Bundle savedInstanceState) {
+
         final ListView listView = (ListView) view.findViewById(R.id.listView);
         final EditText search = (EditText) view.findViewById(R.id.editText);
-        final ImageView add = (ImageView) view.findViewById(R.id.add);
         Collections.sort(exercises, String.CASE_INSENSITIVE_ORDER);
+        if (exercises.isEmpty()) {
+            exercises.add("No records have been made yet, Get to it!");
+        }
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity().getApplicationContext(), R.layout.layout_exerciseitem, R.id.textView, exercises);
         listView.setAdapter(adapter);
 
@@ -55,32 +60,25 @@ public class ExerciseSearchFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            String name = (String) listView.getItemAtPosition(position);
-            mCallback.onExerciseSelected(name);
-            }
-        });
-
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCallback.onExerciseAdd();
+                String name = (String) listView.getItemAtPosition(position);
+                if (!name.equals("No records have been made yet, Get to it!") ) {
+                    mCallback.onRecordsSelected(name);
+                }
             }
         });
     }
 
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnExerciseSelected) {
-            mCallback = (OnExerciseSelected) context;
+        if (context instanceof OnRecordsSelected) {
+            mCallback = (OnRecordsSelected) context;
         } else {
             throw new ClassCastException(context.toString()
-                + " must implement ExerciseSearchFragment.OnExerciseSelected");
+                    + " must implement ExerciseSearchFragment.OnExerciseSelected");
         }
     }
 
-    interface OnExerciseSelected {
-        void onExerciseSelected(String name);
-        void onExerciseAdd();
+    interface OnRecordsSelected {
+        void onRecordsSelected(String name);
     }
 }
-

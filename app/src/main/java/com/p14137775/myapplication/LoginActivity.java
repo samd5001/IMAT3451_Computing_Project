@@ -106,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (!error) {
                         getSharedPreferences("preferences", MODE_PRIVATE).edit().putBoolean("loggedIn", true).apply();
                         jObj = jObj.getJSONObject("user");
-                        User user = new User(jObj.getString("email"), jObj.getString("name"), jObj.getString("dob"), jObj.getInt("gender"), jObj.getDouble("height"), jObj.getDouble("weight"), jObj.getInt("goal"), jObj.getInt("units"));
+                        User user = new User(email, password, jObj.getString("name"), jObj.getString("dob"), jObj.getInt("gender"), jObj.getDouble("height"), jObj.getDouble("weight"), jObj.getInt("goal"), jObj.getInt("units"));
                         db.loginUser(user);
                         finish();
 

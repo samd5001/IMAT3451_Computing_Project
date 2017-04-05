@@ -23,7 +23,9 @@ import java.util.ArrayList;
 
 import classes.Exercise;
 import classes.ExerciseRecord;
+import classes.Set;
 import classes.User;
+import views.SetView;
 import wrappers.SQLWrapper;
 
 public class ExerciseTrackFragment extends Fragment {
@@ -31,6 +33,7 @@ public class ExerciseTrackFragment extends Fragment {
     private OnComplete mCallback;
     private ArrayList<SetView> sets;
     private User user;
+    private boolean submitted;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -40,6 +43,7 @@ public class ExerciseTrackFragment extends Fragment {
     }
 
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        submitted = false;
         TextView name = (TextView) view.findViewById(R.id.textView);
         final ViewGroup vg = (ViewGroup) name.getParent();
         ImageView add = (ImageView) view.findViewById(R.id.imageView);
@@ -125,28 +129,61 @@ public class ExerciseTrackFragment extends Fragment {
         complete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (checkSets()) {
-                    new AlertDialog.Builder(getContext())
-                            .setMessage("Do you want to record these values?")
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    JSONArray setsJSON = new JSONArray();
-                                    for (SetView set : sets) {
-                                        JSONObject setJSON = set.getJSON();
-                                        setsJSON.put(setJSON);
-                                    }
-                                    ExerciseRecord record = new ExerciseRecord(exercise.getName(), setsJSON.toString());
-                                    db.storeRecord(record, true);
-                                    mCallback.onComplete();
-                                }})
-                            .setNegativeButton("No", null).show();
+                try {
+                    if (checkSets() || submitted) {
+                        new AlertDialog.Builder(getContext())
+                                .setMessage("Do you want to record these values?")
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        JSONArray setsJSON = new JSONArray();
+                                        for (SetView set : sets) {
+                                            JSONObject setJSON = set.getJSON();
+                                            setsJSON.put(setJSON);
+                                        }
+                                        ExerciseRecord record = new ExerciseRecord(0, exercise.getName(), setsJSON.toString());
+                                        db.storeRecord(record, true);
+                                        mCallback.onComplete();
+                                    }})
+                                .setNegativeButton("No", null).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
         });
     }
 
-    boolean checkSets() {
+    boolean checkSets() throws JSONException {
+        ArrayList<ExerciseRecord> previousRecords = new SQLWrapper(getContext(), getContext().getSharedPreferences("preferences", Context.MODE_PRIVATE)).getLastRecords(exercise.getName());
+        boolean setsMatch = false;
+        if (previousRecords.size() == 5) {
+            setsMatch= true;
+            for (int i = 0; i < 4; i++) {
+                JSONArray previousSets = previousRecords.get(i).getSetsJSON();
+                JSONArray nextSets = previousRecords.get(i + 1).getSetsJSON();
+                if (previousSets.length() <= nextSets.length()) {
+                    for (int d = 0; d < previousSets.length(); d++) {
+                        Set previousSet = new Set(previousSets.getJSONObject(d));
+                        Set nextSet = new Set(nextSets.getJSONObject(d));
+                        if (previousSet.getWeight() != nextSet.getWeight()) {
+                            setsMatch = false;
+                        }
+                    }
+                }
+            }
+        }
+        if (setsMatch) {
+            Toast.makeText(getActivity().getApplicationContext(),
+                    "You've been doing the same weight for a while now, consider upping them", Toast.LENGTH_LONG).show();
+            submitted = true;
+        }
+        JSONArray lastSets = null;
+        if (!previousRecords.isEmpty()) {
+            lastSets = previousRecords.get(previousRecords.size() - 1).getSetsJSON();
+        }
+        int i = 0;
         for (SetView set : sets) {
+
             if (set.getReps() == 0) {
                 Toast.makeText(getActivity().getApplicationContext(),
                         "Please enter the number of reps on " + set.getSets(), Toast.LENGTH_LONG).show();
@@ -159,34 +196,53 @@ public class ExerciseTrackFragment extends Fragment {
             }
             if (set.getReps() > 30) {
                 Toast.makeText(getActivity().getApplicationContext(),
-                        "Consider doing a heavier weight on" + set.getSets(), Toast.LENGTH_LONG).show();
+                        "Consider doing a heavier weight on " + set.getSets(), Toast.LENGTH_LONG).show();
+                submitted = true;
             }
-            if (user != null) {
+            if (set.getReps() > 40) {
+                Toast.makeText(getActivity().getApplicationContext(),
+                        "Too many reps, please enter a valid ammount" + set.getSets(), Toast.LENGTH_LONG).show();
+                return false;
+            }
+
+            if (lastSets != null) {
+                Set setObj = new Set(lastSets.getJSONObject(i));
+                if (set.getWeight() < setObj.getWeight() && set.getReps() < setObj.getReps()) {
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            "Consider doing a higher weight or more reps. Your last record was better on " + set.getSets(), Toast.LENGTH_LONG).show();
+                    submitted = true;
+                }
+            } else if (user != null) {
                 switch (user.getGoal()) {
                     case 0:
                         if (set.getReps() > 5) {
                             Toast.makeText(getActivity().getApplicationContext(),
-                                    "Consider doing a heavier weight on" + set.getSets(), Toast.LENGTH_LONG).show();
+                                    "Consider doing a heavier weight on " + set.getSets(), Toast.LENGTH_LONG).show();
+                            submitted = true;
                         }
                         break;
                     case 1:
                         if (set.getReps() < 8) {
                             Toast.makeText(getActivity().getApplicationContext(),
-                                    "Consider doing a lighter weight on" + set.getSets(), Toast.LENGTH_LONG).show();
+                                    "Consider doing a lighter weight on " + set.getSets(), Toast.LENGTH_LONG).show();
+                            submitted = true;
                         }
                         if (set.getReps() > 12) {
                             Toast.makeText(getActivity().getApplicationContext(),
-                                    "Consider doing a heavier weight on" + set.getSets(), Toast.LENGTH_LONG).show();
+                                    "Consider doing a heavier weight on " + set.getSets(), Toast.LENGTH_LONG).show();
+                            submitted = true;
                         }
                         break;
                     case 2:
                         if (set.getReps() < 10) {
                             Toast.makeText(getActivity().getApplicationContext(),
-                                    "Consider doing a lighter weight on" + set.getSets(), Toast.LENGTH_LONG).show();
+                                    "Consider doing a lighter weight on " + set.getSets(), Toast.LENGTH_LONG).show();
+                            submitted = true;
                         }
                         if (set.getReps() > 20) {
                             Toast.makeText(getActivity().getApplicationContext(),
-                                    "Consider doing a heavier weight on" + set.getSets(), Toast.LENGTH_LONG).show();
+                                    "Consider doing a heavier weight on " + set.getSets(), Toast.LENGTH_LONG).show();
+                            submitted = true;
                         }
                     default:
                         break;

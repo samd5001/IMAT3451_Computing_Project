@@ -1,4 +1,4 @@
-package com.p14137775.myapplication;
+package views;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.p14137775.myapplication.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;

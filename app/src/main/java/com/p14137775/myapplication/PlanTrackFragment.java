@@ -23,6 +23,7 @@ import classes.Day;
 import classes.Exercise;
 import classes.ExerciseRecord;
 import classes.User;
+import views.SetView;
 import wrappers.SQLWrapper;
 
 public class PlanTrackFragment extends ExerciseTrackFragment {
@@ -127,21 +128,25 @@ public class PlanTrackFragment extends ExerciseTrackFragment {
         complete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (checkSets()) {
-                    new AlertDialog.Builder(getContext())
-                            .setMessage("Do you want to record these values?")
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    JSONArray setsJSON = new JSONArray();
-                                    for (SetView set : sets) {
-                                        JSONObject setJSON = set.getJSON();
-                                        setsJSON.put(setJSON);
-                                    }
-                                    ExerciseRecord record = new ExerciseRecord(exercise.getName(), setsJSON.toString());
-                                    db.storeRecord(record, true);
-                                    mCallback.onComplete();
-                                }})
-                            .setNegativeButton("No", null).show();
+                try {
+                    if (checkSets()) {
+                        new AlertDialog.Builder(getContext())
+                                .setMessage("Do you want to record these values?")
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        JSONArray setsJSON = new JSONArray();
+                                        for (SetView set : sets) {
+                                            JSONObject setJSON = set.getJSON();
+                                            setsJSON.put(setJSON);
+                                        }
+                                        ExerciseRecord record = new ExerciseRecord(0, exercise.getName(), setsJSON.toString());
+                                        db.storeRecord(record, true);
+                                        mCallback.onComplete();
+                                    }})
+                                .setNegativeButton("No", null).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
         });
