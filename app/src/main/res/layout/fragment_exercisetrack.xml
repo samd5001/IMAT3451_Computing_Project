@@ -4,10 +4,12 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    android:weightSum="1" >
+    android:weightSum="1"
+    android:background="@color/colorPrimaryHighlight">
     <LinearLayout
         android:orientation="vertical" android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:weightSum="1">
 
         <TextView
@@ -17,7 +19,14 @@
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
             android:gravity="center"
-            android:textSize="22sp"/>
+            android:textSize="22sp"
+            android:textColor="@color/colorTextDark"/>
+
+        <com.android.volley.toolbox.NetworkImageView
+            android:id="@+id/networkImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"/>
 
         <LinearLayout
             android:layout_width="match_parent"

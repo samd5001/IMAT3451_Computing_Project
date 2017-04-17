@@ -18,14 +18,14 @@ import java.util.Collections;
 
 import wrappers.SQLWrapper;
 
-public class HistorySearchFragment extends Fragment {
+public class HistorySearchPlanFragment extends Fragment {
 
-    private OnRecordsSelected mCallback;
-    ArrayList<String> exercises;
+    private OnPlanRecordsSelected mCallback;
+    ArrayList<String> plans;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        exercises = new SQLWrapper(getActivity().getApplicationContext()).getAllRecordedExerciseAreasList(getArguments().getString("area"));
+        plans = new SQLWrapper(getActivity().getApplicationContext()).getPlanNames();
         return inflater.inflate(R.layout.fragment_historysearch, parent, false);
     }
 
@@ -33,11 +33,11 @@ public class HistorySearchFragment extends Fragment {
 
         final ListView listView = (ListView) view.findViewById(R.id.listView);
         final EditText search = (EditText) view.findViewById(R.id.editText);
-        Collections.sort(exercises, String.CASE_INSENSITIVE_ORDER);
-        if (exercises.isEmpty()) {
-            exercises.add("No records have been made yet, Get to it!");
+        Collections.sort(plans, String.CASE_INSENSITIVE_ORDER);
+        if (plans.isEmpty()) {
+            plans.add("No records have been made yet, Get to it!");
         }
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity().getApplicationContext(), R.layout.layout_exerciseitem, R.id.textView, exercises);
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity().getApplicationContext(), R.layout.layout_exerciseitem, R.id.textView, plans);
         listView.setAdapter(adapter);
 
         search.addTextChangedListener(new TextWatcher() {
@@ -62,7 +62,7 @@ public class HistorySearchFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String name = (String) listView.getItemAtPosition(position);
                 if (!name.equals("No records have been made yet, Get to it!") ) {
-                    mCallback.onRecordsSelected(name);
+                    mCallback.onPlanRecordsSelected(name);
                 }
             }
         });
@@ -70,15 +70,14 @@ public class HistorySearchFragment extends Fragment {
 
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnRecordsSelected) {
-            mCallback = (OnRecordsSelected) context;
+        if (context instanceof OnPlanRecordsSelected) {
+            mCallback = (OnPlanRecordsSelected) context;
         } else {
-            throw new ClassCastException(context.toString()
-                    + " must implement ExerciseSearchFragment.OnExerciseSelected");
+            throw new ClassCastException(context.toString());
         }
     }
 
-    interface OnRecordsSelected {
-        void onRecordsSelected(String name);
+    interface OnPlanRecordsSelected {
+        void onPlanRecordsSelected(String name);
     }
 }

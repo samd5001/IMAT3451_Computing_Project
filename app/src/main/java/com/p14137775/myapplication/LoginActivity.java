@@ -1,5 +1,6 @@
 package com.p14137775.myapplication;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -41,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         final TextView register = (TextView) findViewById(R.id.textView4);
         final TextView forgot = (TextView) findViewById(R.id.textView3);
 
-        db = new SQLWrapper(getApplicationContext(), getSharedPreferences("preferences", MODE_PRIVATE));
+        db = new SQLWrapper(getApplicationContext());
 
         login.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -94,9 +97,10 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void remoteLogin(final String email, final String password) {
-        StringRequest strReq = new StringRequest(Request.Method.POST,
+        StringRequest request = new StringRequest(Request.Method.POST,
                 URLWrapper.loginURL, new Response.Listener<String>() {
 
+            @SuppressLint("ApplySharedPref")
             @Override
             public void onResponse(String response) {
                 try {
@@ -104,9 +108,9 @@ public class LoginActivity extends AppCompatActivity {
                     boolean error = jObj.getBoolean("error");
 
                     if (!error) {
-                        getSharedPreferences("preferences", MODE_PRIVATE).edit().putBoolean("loggedIn", true).apply();
+                        getSharedPreferences("preferences", MODE_PRIVATE).edit().putBoolean("loggedIn", true).commit();
                         jObj = jObj.getJSONObject("user");
-                        User user = new User(email, password, jObj.getString("name"), jObj.getString("dob"), jObj.getInt("gender"), jObj.getDouble("height"), jObj.getDouble("weight"), jObj.getInt("goal"), jObj.getInt("units"));
+                        User user = new User(email, password, jObj.getString("name"), jObj.getString("dob"), jObj.getInt("gender"), jObj.getDouble("height"), jObj.getDouble("weight"), jObj.getInt("goal"));
                         db.loginUser(user);
                         finish();
 
@@ -124,7 +128,9 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
+                if (error instanceof NoConnectionError) {
+                    Toast.makeText(getApplicationContext(), "No Network Conenction", Toast.LENGTH_SHORT).show();
+                }
             }
         }) {
 
@@ -137,6 +143,7 @@ public class LoginActivity extends AppCompatActivity {
                 return params;
             }
         };
-        VolleyWrapper.getInstance().addToRequestQueue(strReq);
+        request.setRetryPolicy(new DefaultRetryPolicy(10000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleyWrapper.getInstance().addToRequestQueue(request, "login");
     }
 }

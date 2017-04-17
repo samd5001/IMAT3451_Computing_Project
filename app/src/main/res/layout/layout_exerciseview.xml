@@ -3,7 +3,7 @@
     android:layout_width="100dp"
     android:layout_height="80dp"
     android:orientation="vertical"
-    android:gravity="center_horizontal"
+    android:gravity="center"
     android:background="@drawable/daybox"
     android:backgroundTint="@color/colorPrimaryHighlight"
     android:elevation="2dp"

@@ -60,14 +60,14 @@ public class ExerciseDetailsFragment extends Fragment {
                             .setMessage("Are you sure you want to delete this exercise?")
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
-                                    new SQLWrapper(getActivity().getApplicationContext(),getActivity().getSharedPreferences("preferences", Context.MODE_PRIVATE)).deleteExercise(exercise.getName());
+                                    new SQLWrapper(getActivity().getApplicationContext()).deleteExercise(exercise.getName());
                                     mCallback.onDelete(exercise);
                                 }})
                             .setNegativeButton("No", null).show();
                 }
             });
         }
-        ArrayList<ExerciseRecord> records = new SQLWrapper(getContext(), getContext().getSharedPreferences("preferences", Context.MODE_PRIVATE)).getLastTwoRecords(exercise.getName());
+        ArrayList<ExerciseRecord> records = new SQLWrapper(getContext()).getLastTwoRecords(exercise.getName());
         if (!records.isEmpty()) {
             for (ExerciseRecord record : records) {
                 vg.addView(new RecordView(getContext(), record));

@@ -72,7 +72,7 @@ public class SetView extends LinearLayout {
         JSONObject json = new JSONObject();
         try {
             json.put("reps", reps.getText().toString().trim());
-            json.put("time", 0);
+            json.put("time", "0");
             json.put("weight", weight.getText().toString().trim());
         } catch (JSONException e) {
             e.printStackTrace();

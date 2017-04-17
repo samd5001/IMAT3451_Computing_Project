@@ -15,6 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.toolbox.NetworkImageView;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,17 +40,19 @@ public class ExerciseTrackFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         exercise = ((MainActivity)getActivity()).getExercise();
-        user = ((MainActivity)getActivity()).getUser();
+        user = ((MainActivity)getActivity()).getDb().getUser();
+        submitted = false;
         return inflater.inflate(R.layout.fragment_exercisetrack, parent, false);
     }
 
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        submitted = false;
         TextView name = (TextView) view.findViewById(R.id.textView);
         final ViewGroup vg = (ViewGroup) name.getParent();
         ImageView add = (ImageView) view.findViewById(R.id.imageView);
         ImageView remove = (ImageView) view.findViewById(R.id.imageView2);
         Button complete = (Button) view.findViewById(R.id.button);
+        NetworkImageView image = (NetworkImageView) view.findViewById(R.id.networkImageView);
+        ((ViewGroup)image.getParent()).removeView(image);
         final SQLWrapper db = ((MainActivity)getActivity()).getDb();
         name.setText(exercise.getName());
         int setNum = 1;
@@ -130,7 +134,7 @@ public class ExerciseTrackFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 try {
-                    if (checkSets() || submitted) {
+                    if (checkSets(exercise, sets) || submitted) {
                         new AlertDialog.Builder(getContext())
                                 .setMessage("Do you want to record these values?")
                                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -140,7 +144,7 @@ public class ExerciseTrackFragment extends Fragment {
                                             JSONObject setJSON = set.getJSON();
                                             setsJSON.put(setJSON);
                                         }
-                                        ExerciseRecord record = new ExerciseRecord(0, exercise.getName(), setsJSON.toString());
+                                        ExerciseRecord record = new ExerciseRecord(exercise.getName(), setsJSON.toString());
                                         db.storeRecord(record, true);
                                         mCallback.onComplete();
                                     }})
@@ -153,10 +157,10 @@ public class ExerciseTrackFragment extends Fragment {
         });
     }
 
-    boolean checkSets() throws JSONException {
-        ArrayList<ExerciseRecord> previousRecords = new SQLWrapper(getContext(), getContext().getSharedPreferences("preferences", Context.MODE_PRIVATE)).getLastRecords(exercise.getName());
+    boolean checkSets(Exercise exercise, ArrayList<SetView> sets) throws JSONException {
+        ArrayList<ExerciseRecord> previousRecords = new SQLWrapper(getContext()).getLastRecords(exercise.getName());
         boolean setsMatch = false;
-        if (previousRecords.size() == 5) {
+        if (previousRecords.size() == 3) {
             setsMatch= true;
             for (int i = 0; i < 4; i++) {
                 JSONArray previousSets = previousRecords.get(i).getSetsJSON();

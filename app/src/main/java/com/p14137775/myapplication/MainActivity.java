@@ -1,5 +1,6 @@
 package com.p14137775.myapplication;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,7 +12,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -25,11 +25,13 @@ import classes.Plan;
 import classes.User;
 import wrappers.SQLWrapper;
 
+@SuppressWarnings("ConstantConditions")
 public class MainActivity extends AppCompatActivity implements ExerciseAreasFragment.OnAreaSelected,
         ExerciseSearchFragment.OnExerciseSelected, ExerciseDetailsFragment.OnDetail,
         ExerciseTrackFragment.OnComplete, PlanSearchFragment.OnPlanSelected, WelcomeFragment.OnWelcomeComplete,
         ExerciseCreateFragment.OnCreateExercise, PlanDetailsFragment.OnPlanBegin, PlanCurrentFragment.OnCurrentSelect,
-        HistorySearchFragment.OnRecordsSelected, HistoryCategoryFragment.OnCategorySelected {
+        HistorySearchFragment.OnRecordsSelected, HistoryCategoryFragment.OnCategorySelected,
+        PlanTrackFragment.OnCompletePlan, HistoryAreasFragment.OnHistoryAreaSelected, HistorySearchPlanFragment.OnPlanRecordsSelected, HistoryPlanDayFragment.OnPlanDaySelected {
 
     private ExerciseFragment exerciseFragment;
     private PlanFragment planFragment;
@@ -38,18 +40,21 @@ public class MainActivity extends AppCompatActivity implements ExerciseAreasFrag
     private Exercise exercise;
     private Plan plan;
     private Day day;
+    private ArrayList<Exercise> exercises;
+    private int exerciseNum;
     private SQLWrapper db;
     private TabLayout tabs;
     private ViewPagerAdapter adapter;
     private SharedPreferences prefs;
     private Runnable runnable;
 
+    @SuppressLint("ApplySharedPref")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         prefs = getSharedPreferences("preferences", MODE_PRIVATE);
-        db = new SQLWrapper(getApplicationContext(), prefs);
+        db = new SQLWrapper(getApplicationContext());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_dumbbell);
         tabs = (TabLayout) findViewById(R.id.tabLayout);
@@ -62,8 +67,8 @@ public class MainActivity extends AppCompatActivity implements ExerciseAreasFrag
         setupViewPager(viewPager);
         tabs.setupWithViewPager(viewPager);
         if (prefs.getBoolean("firstRun", true)) {
-            prefs.edit().putBoolean("loggedIn", false).apply();
-            prefs.edit().putBoolean("syncing", false).apply();
+            prefs.edit().putBoolean("loggedIn", false).commit();
+            prefs.edit().putBoolean("syncing", false).commit();
         }
 
         final Handler handler = new Handler();
@@ -73,14 +78,12 @@ public class MainActivity extends AppCompatActivity implements ExerciseAreasFrag
                 if (!prefs.getBoolean("syncing", false)) {
                     db.syncData();
                 }
-                Log.d("Handlers", "Called on main thread");
                 handler.postDelayed(runnable, 300000);
             }
 
         };
-        handler.post(runnable);
+        handler.postDelayed(runnable, 100000);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -95,9 +98,7 @@ public class MainActivity extends AppCompatActivity implements ExerciseAreasFrag
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             case R.id.sync:
-                if (!prefs.getBoolean("syncing", false)) {
                     db.syncData();
-                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -143,6 +144,10 @@ public class MainActivity extends AppCompatActivity implements ExerciseAreasFrag
         return exercise;
     }
 
+    public void setExercise(String name) {
+        exercise = db.getExercise(name);
+    }
+
     public Plan getPlan() {
         return plan;
     }
@@ -153,7 +158,6 @@ public class MainActivity extends AppCompatActivity implements ExerciseAreasFrag
 
     @Override
     public void onAreaSelected(String area) {
-        user = new SQLWrapper(getApplicationContext(), prefs).getUser();
         ArrayList<String> exercises = db.getExerciseList(area);
         if (!exercises.isEmpty()) {
             ExerciseSearchFragment searchFragment = new ExerciseSearchFragment();
@@ -237,6 +241,8 @@ public class MainActivity extends AppCompatActivity implements ExerciseAreasFrag
     @Override
     public void onPlanBegin(Day day) {
         this.day = day;
+        exerciseNum = 0;
+        exercises = day.getExercises(db);
         planFragment.getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom)
                 .replace(R.id.placeholder, new PlanTrackMainFragment(), "planDetails").addToBackStack(null).commit();
     }
@@ -248,12 +254,26 @@ public class MainActivity extends AppCompatActivity implements ExerciseAreasFrag
 
     @Override
     public void onBrowse() {
-        planFragment.getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom)
-                .replace(R.id.placeholder, new PlanSearchFragment(), "planSearch").addToBackStack(null).commit();
+        ArrayList<Plan> plans = db.getPlans();
+        if (!plans.isEmpty()) {
+            planFragment.getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom)
+                    .replace(R.id.placeholder, new PlanSearchFragment(), "planSearch").addToBackStack(null).commit();
+        } else {
+            Toast.makeText(getApplicationContext(),
+                    "Loading database. Please wait and try again (An internet connection is required for initial setup", Toast.LENGTH_LONG).show();
+        }
     }
 
     public Day getDay() {
         return day;
+    }
+
+    public Exercise getPlanExercise() {
+        return exercises.get(exerciseNum);
+    }
+
+    public int getExerciseNum() {
+        return exerciseNum;
     }
 
     @Override
@@ -268,10 +288,61 @@ public class MainActivity extends AppCompatActivity implements ExerciseAreasFrag
 
     @Override
     public void onCategorySelected(String name) {
-        if (name.equals("Exercises")) {
-            historyFragment.getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom)
-                    .replace(R.id.placeholder, new HistorySearchFragment(), "planSearch").addToBackStack(null).commit();
+        switch (name) {
+            case "Exercises":
+                historyFragment.getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom)
+                        .replace(R.id.placeholder, new HistoryAreasFragment(), "planSearch").addToBackStack(null).commit();
+                break;
+            case "Plans":
+                historyFragment.getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom)
+                        .replace(R.id.placeholder, new HistorySearchPlanFragment(), "planSearch").addToBackStack(null).commit();
+                break;
         }
+    }
+
+    @Override
+    public void onCompletePlan() {
+        exerciseNum++;
+        if (exerciseNum < exercises.size()) {
+            planFragment.getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom)
+                    .replace(R.id.placeholder, new PlanTrackMainFragment(), "planDetails").addToBackStack(null).commit();
+        } else {
+            for (int i = 0; i < exercises.size(); i++) {
+                planFragment.getChildFragmentManager().popBackStack();
+            }
+            prefs.edit().putString("currentPlan", day.getPlanName()).apply();
+        }
+    }
+
+    @Override
+    public void onHistoryAreaSelected(String area) {
+        HistorySearchFragment searchFragment = new HistorySearchFragment();
+        Bundle args = new Bundle();
+        args.putString("area", area);
+        searchFragment.setArguments(args);
+        historyFragment.getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom)
+                .replace(R.id.placeholder, searchFragment, "recordSearch").addToBackStack(null).commit();
+    }
+
+    @Override
+    public void onPlanRecordsSelected(String name) {
+        HistoryPlanDayFragment searchFragment = new HistoryPlanDayFragment();
+        Bundle args = new Bundle();
+        args.putString("name", name);
+        searchFragment.setArguments(args);
+        historyFragment.getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom)
+                .replace(R.id.placeholder, searchFragment, "recordSearch").addToBackStack(null).commit();
+    }
+
+    @Override
+    public void onPlanDaySelected(String planName, String daynum) {
+        HistoryDisplayPlanFragment planFragment = new HistoryDisplayPlanFragment();
+        Bundle args = new Bundle();
+        args.putString("name", planName);
+        args.putString("daynum", daynum);
+        planFragment.setArguments(args);
+        historyFragment.getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom)
+                .replace(R.id.placeholder, planFragment, "recordSearch").addToBackStack(null).commit();
     }
 
     private static class ViewPagerAdapter extends FragmentPagerAdapter {

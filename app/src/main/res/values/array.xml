@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="unitsArray">
-        <item>Metric (kg)</item>
-        <item>Imperial (lb)</item>
+    <string-array name="goal_array">
+        <item>Improve Strength</item>
+        <item>Improve Muscle Mass</item>
+        <item>Lose Fat</item>
     </string-array>
 
-    <string-array name="unitsValues">
-        <item>1</item>
+    <string-array name="goal_values">
         <item>0</item>
+        <item>1</item>
+        <item>2</item>
     </string-array>
 
     <string-array name="type_array">

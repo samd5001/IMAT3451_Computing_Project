@@ -7,8 +7,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import classes.Plan;
@@ -29,26 +29,24 @@ public class PlanCurrentFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         TextView title = (TextView) view.findViewById(R.id.title);
-        TextView description = (TextView) view.findViewById((R.id.title));
+        TextView description = (TextView) view.findViewById((R.id.description));
         ImageButton search = (ImageButton) view.findViewById(R.id.search);
-        Button begin = (Button) view.findViewById(R.id.begin);
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mCallback.onBrowse();
             }
         });
-        if (prefs.getString("currentPlan", "none").equals("none")) {
+        if (prefs.getString("currentPlan", "").equals("")) {
             title.setText(R.string.selectplan);
             description.setText(R.string.browse);
-            ((ViewGroup) begin.getParent()).removeView(begin);
         } else {
-            title.setText(db.getPlan(prefs.getString("currentPlan", "none")).getName());
+            title.setText(prefs.getString("currentPlan", ""));
             description.setText(R.string.nextday);
-            begin.setOnClickListener(new View.OnClickListener() {
+            ((LinearLayout)description.getParent()).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mCallback.onPlanContinue(db.getPlan(prefs.getString("currentPlan", "none")));
+                    mCallback.onPlanContinue(db.getPlan(prefs.getString("currentPlan", "")));
                 }
             });
         }

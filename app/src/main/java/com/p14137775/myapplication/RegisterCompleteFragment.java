@@ -1,5 +1,6 @@
 package com.p14137775.myapplication;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,6 +15,7 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request.Method;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -47,7 +49,7 @@ public class RegisterCompleteFragment extends Fragment {
     }
 
     public void onViewCreated(View view, Bundle savedInstance) {
-        db = new SQLWrapper(getActivity().getApplicationContext(), getActivity().getSharedPreferences("preferences", MODE_PRIVATE));
+        db = new SQLWrapper(getActivity().getApplicationContext());
         final EditText nameText = (EditText) view.findViewById(R.id.editText);
         final EditText heightText = (EditText) view.findViewById(R.id.editText2);
         final EditText weightText = (EditText) view.findViewById(R.id.editText3);
@@ -79,7 +81,7 @@ public class RegisterCompleteFragment extends Fragment {
                             int gender = genderGroup.indexOfChild(selectedGender);
                             DateTimeWrapper date = new DateTimeWrapper(datePicker.getYear(), (datePicker.getMonth() + 1), datePicker.getDayOfMonth());
                             String dob = date.sqlReady();
-                            User user = new User(email, password, name, dob, gender, height, weight, selectedGoal, 1);
+                            User user = new User(email, password, name, dob, gender, height, weight, selectedGoal);
                             registerUser(user);
                             }
                         });
@@ -113,15 +115,16 @@ public class RegisterCompleteFragment extends Fragment {
         StringRequest request = new StringRequest(Method.POST,
                 URLWrapper.registerURL, new Response.Listener<String>() {
 
+            @SuppressLint("ApplySharedPref")
             @Override
             public void onResponse(String response) {
-
                 try {
                     JSONObject jObj = new JSONObject(response);
                     boolean error = jObj.getBoolean("error");
                     if (!error) {
                         Toast.makeText(getActivity().getApplicationContext(), "Account created. You have been logged in", Toast.LENGTH_LONG).show();
                         db.loginUser(user);
+                        getActivity().getSharedPreferences("preferences", MODE_PRIVATE).edit().putBoolean("loggedIn", true).commit();
                         mCallback.onRegisterComplete();
                     } else {
                         String errorMsg = jObj.getString("message");
@@ -131,14 +134,12 @@ public class RegisterCompleteFragment extends Fragment {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
         }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity().getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_LONG).show();
+                error.printStackTrace();
             }
         }) {
 
@@ -146,18 +147,18 @@ public class RegisterCompleteFragment extends Fragment {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("email", user.getEmail());
-                params.put("password", password);
+                params.put("password", user.getPassword());
                 params.put("name", user.getName());
                 params.put("dob", user.getDob());
                 params.put("gender", String.valueOf(user.getGender()));
                 params.put("height", String.valueOf(user.getHeight()));
                 params.put("weight", String.valueOf(user.getWeight()));
                 params.put("goal", String.valueOf(user.getGoal()));
-                params.put("units", String.valueOf(user.getUnits()));
                 return params;
             }
 
         };
-        VolleyWrapper.getInstance().addToRequestQueue(request);
+        request.setRetryPolicy(new DefaultRetryPolicy(10000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleyWrapper.getInstance().addToRequestQueue(request, "register");
     }
 }

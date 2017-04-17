@@ -66,13 +66,13 @@ public class ExerciseCreateFragment extends Fragment {
                 }
                 switch (String.valueOf(typeSpinner.getSelectedItem())) {
                     case "Free Weight":
-                        type = 1;
+                        type = 0;
                         break;
                     case "Body Weight":
-                        type = 2;
+                        type = 1;
                         break;
                     case "Machine":
-                        type = 3;
+                        type = 2;
                         break;
                     default:
                         break;

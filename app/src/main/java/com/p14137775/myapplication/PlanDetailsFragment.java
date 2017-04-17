@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,9 +16,9 @@ import org.json.JSONException;
 import java.util.ArrayList;
 
 import classes.Day;
+import classes.Exercise;
 import classes.ExerciseRecord;
 import classes.Plan;
-import classes.QueryValidator;
 import views.DayView;
 import wrappers.SQLWrapper;
 
@@ -40,28 +41,28 @@ public class PlanDetailsFragment extends Fragment{
         try {
             JSONArray days = new JSONArray(plan.getDays());
             ArrayList<Day> daysArray = new ArrayList<>();
-            ArrayList<String> exerciseArray = new ArrayList<>();
+            ArrayList<Exercise> exerciseArray = new ArrayList<>();
             for (int i = 0; i < days.length(); i++) {
                 daysArray.add(db.getDay(plan.getName(), days.getInt(i)));
-                exerciseArray.add(new JSONArray(daysArray.get(i).getExercises()).getString(0));
+                ArrayList<Exercise> lastExercise = daysArray.get(i).getExercises(db);
+                exerciseArray.add(lastExercise.get(lastExercise.size()-1));
             }
-            ExerciseRecord lastRecord = db.getLastPlanRecord(exerciseArray.get(0), new QueryValidator(daysArray.get(0).getPlanName()).validateQuery());
+            ExerciseRecord lastRecord = db.getLastPlanRecord(exerciseArray.get(0).getName(), daysArray.get(0).getPlanName(),  daysArray.get(0).getDayNumber());
             int lastDay = 0;
             if (lastRecord != null) {
                 lastDay++;
-                ExerciseRecord nextRecord = db.getLastPlanRecord(exerciseArray.get(1), daysArray.get(1).getPlanName());
-                if ((nextRecord.getTime().compareTo(lastRecord.getTime())) > 0) {
-                    lastDay++;
-                    while(lastDay < days.length() && (nextRecord.getTime().compareTo(lastRecord.getTime())) > 0) {
-                        lastRecord = nextRecord;
-                        nextRecord = db.getLastPlanRecord(exerciseArray.get(lastDay), daysArray.get(lastDay).getPlanName());
+                ExerciseRecord nextRecord = db.getLastPlanRecord(exerciseArray.get(1).getName(), daysArray.get(1).getPlanName(), daysArray.get(1).getDayNumber());
+                    while (nextRecord != null && lastDay < days.length() && (nextRecord.getTime().compareTo(lastRecord.getTime())) > 0) {
                         lastDay++;
+                        if (lastDay < days.length()) {
+                            lastRecord = nextRecord;
+                            nextRecord = db.getLastPlanRecord(exerciseArray.get(lastDay).getName(), daysArray.get(lastDay).getPlanName(), daysArray.get(lastDay).getDayNumber());
+                        }
                     }
                     if (lastDay == days.length()) {
                         lastDay = 0;
                     }
-                }
-            }
+        }
 
             final Day day = db.getDay(plan.getName(), days.getInt(lastDay));
             DayView dayView = new DayView(getActivity().getApplicationContext(), db, day);
@@ -73,11 +74,75 @@ public class PlanDetailsFragment extends Fragment{
                     mCallback.onPlanBegin(day);
                 }
             });
+            int dayDifference = db.getDay(plan.getName(), days.getInt(lastDay+1)).getDayNumber() - day.getDayNumber();
+            if (dayDifference > 1 ) {
+                for (int d = 0; d < dayDifference - 1; d++) {
+                    dayView = new DayView(getActivity().getApplicationContext());
+                    dayView.setGravity(Gravity.CENTER_HORIZONTAL);
+                    dayView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(getActivity().getApplicationContext(),
+                                    "Rest day!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    ((ViewGroup)title.getParent().getParent()).addView(dayView);
+                }
+            }
             for (int i = lastDay + 1; i < days.length(); i++) {
                 Day afterDay = db.getDay(plan.getName(), days.getInt(i));
-                dayView = new DayView(getActivity().getApplicationContext(), db, afterDay);
-                dayView.setGravity(Gravity.CENTER_HORIZONTAL);
-                ((ViewGroup)title.getParent().getParent()).addView(dayView);
+                if (i != days.length()-1) {
+                    dayDifference = afterDay.getDayNumber() - db.getDay(plan.getName(), days.getInt(i -1)).getDayNumber();
+                    if (dayDifference > 1 ) {
+                        dayView = new DayView(getActivity().getApplicationContext(), db, afterDay);
+                        dayView.setGravity(Gravity.CENTER_HORIZONTAL);
+                        dayView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(getActivity().getApplicationContext(),
+                                        "Complete the other days first!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        ((ViewGroup)title.getParent().getParent()).addView(dayView);
+                        for (int d = 0; d < dayDifference - 1; d++) {
+                            dayView = new DayView(getActivity().getApplicationContext());
+                            dayView.setGravity(Gravity.CENTER_HORIZONTAL);
+                            dayView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Toast.makeText(getActivity().getApplicationContext(),
+                                            "Rest day!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            ((ViewGroup)title.getParent().getParent()).addView(dayView);
+                        }
+                    }
+                } else {
+                    if (afterDay.getDayNumber() < 7) {
+                        dayView = new DayView(getActivity().getApplicationContext(), db, afterDay);
+                        dayView.setGravity(Gravity.CENTER_HORIZONTAL);
+                        dayView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(getActivity().getApplicationContext(),
+                                        "Complete the other days first!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        ((ViewGroup)title.getParent().getParent()).addView(dayView);
+                        for (int d = afterDay.getDayNumber(); d < 7; d++) {
+                            dayView = new DayView(getActivity().getApplicationContext());
+                            dayView.setGravity(Gravity.CENTER_HORIZONTAL);
+                            dayView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Toast.makeText(getActivity().getApplicationContext(),
+                                            "Rest day!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            ((ViewGroup) title.getParent().getParent()).addView(dayView);
+                        }
+                    }
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();

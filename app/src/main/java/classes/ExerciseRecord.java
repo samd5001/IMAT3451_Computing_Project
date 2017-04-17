@@ -14,7 +14,8 @@ public class ExerciseRecord {
     private String time;
     private String sets;
 
-    public ExerciseRecord(int id, String exerciseName, String sets) {
+    public ExerciseRecord(String exerciseName, String sets) {
+        this.id = 0;
         this.exerciseName = exerciseName;
         this.planName = "";
         this.dayNum = 0;
@@ -23,6 +24,7 @@ public class ExerciseRecord {
     }
 
     public ExerciseRecord(String exerciseName, String planName, int dayNum, String sets) {
+        this.id = 0;
         this.exerciseName = exerciseName;
         this.planName = planName;
         this.dayNum = dayNum;

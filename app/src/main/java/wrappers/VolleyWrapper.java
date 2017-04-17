@@ -9,8 +9,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
-import static com.android.volley.VolleyLog.TAG;
-
 public class VolleyWrapper extends Application {
 
     private RequestQueue mRequestQueue;
@@ -51,8 +49,8 @@ public class VolleyWrapper extends Application {
         return mImageLoader;
     }
 
-    public <T> void addToRequestQueue(Request<T> req) {
-        req.setTag(TAG);
-        getRequestQueue().add(req);
+    public <T> void addToRequestQueue(Request<T> request, String tag) {
+        request.setTag(tag);
+        getRequestQueue().add(request);
     }
 }

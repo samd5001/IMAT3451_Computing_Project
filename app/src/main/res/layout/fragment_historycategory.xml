@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@drawable/bluebar"
-        android:text="@string/area"
+        android:text="@string/browse_category"
         android:textSize="22sp"
         android:gravity="center_vertical"
         android:padding="12dp"/>

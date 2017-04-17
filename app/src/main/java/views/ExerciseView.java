@@ -30,4 +30,7 @@ public class ExerciseView extends LinearLayout {
     public void setName(String name) {
         this.name.setText(name);
     }
+    public String getName() {
+        return this.name.getText().toString();
+    }
 }

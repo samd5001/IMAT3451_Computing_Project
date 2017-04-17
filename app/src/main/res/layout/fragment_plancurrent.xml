@@ -2,65 +2,44 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent" android:gravity="center_horizontal"
+    android:background="@color/colorPrimaryHighlight">
 
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@drawable/bluebar"
-        android:layout_gravity="top"
-        android:padding="12dp"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:padding="10dp"
+            android:background="@drawable/daybox"
+            android:elevation="3dp"
+            android:gravity="center"
+            android:orientation="vertical">
 
         <TextView
             android:id="@+id/title"
-            android:layout_width="250dp"
+            android:layout_width="260dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="80dp"
+            android:layout_marginBottom="20dp"
             android:textSize="22sp"
             android:textAlignment="center"
             android:textColor="@color/colorTextDark" />
 
         <TextView
             android:id="@+id/description"
-            android:layout_width="wrap_content"
+            android:layout_width="260dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="40dp"
             android:textSize="18sp"
+            android:textAlignment="center"
             android:textColor="@color/colorTextDark"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
+        </LinearLayout>
             <ImageButton
                 android:id="@+id/search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="120dp"
                 android:backgroundTint="@color/colorPrimary"
                 app:srcCompat="@android:drawable/ic_menu_search"
-                android:contentDescription="@string/search_button" />
-
-            <Button
-                android:id="@+id/begin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/begin_ex"
-                android:textColor="@color/colorTextLight"
-                android:textSize="18sp"
-                android:textAppearance="@android:style/TextAppearance.Material.Body1"
-                android:backgroundTint="@color/colorPrimary"/>
-
-        </LinearLayout>
-    </LinearLayout>
-
-
-
+                android:contentDescription="@string/search_button"
+                android:elevation="3dp"/>
 </LinearLayout>

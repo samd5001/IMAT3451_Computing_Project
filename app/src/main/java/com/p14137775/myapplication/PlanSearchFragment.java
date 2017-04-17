@@ -1,5 +1,6 @@
 package com.p14137775.myapplication;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,7 +26,7 @@ public class PlanSearchFragment extends Fragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        plans = new SQLWrapper(getActivity().getApplicationContext(), getActivity().getSharedPreferences("preferences", Context.MODE_PRIVATE)).getPlans();
+        plans = new SQLWrapper(getActivity().getApplicationContext()).getPlans();
         return inflater.inflate(R.layout.fragment_plansearch, parent, false);
     }
 
@@ -58,10 +59,11 @@ public class PlanSearchFragment extends Fragment{
 
     private static class PlanAdapter extends ArrayAdapter {
 
-        public PlanAdapter(Context context, int resource, List<Plan> objects) {
+        private PlanAdapter(Context context, int resource, List<Plan> objects) {
             super(context, resource, objects);
         }
 
+        @SuppressLint("InflateParams")
         @NonNull
         @Override
         public View getView(int position, View convertView, @NonNull ViewGroup parent) {

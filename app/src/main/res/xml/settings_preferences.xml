@@ -14,27 +14,14 @@
         android:key="logout"
         android:title="Logout" />
 
-    <ListPreference
-        android:key="units"
-        android:title="Units of measurement"
-        android:entries="@array/unitsArray"
-        android:entryValues="@array/unitsValues">
-    </ListPreference>
 
-    <PreferenceScreen
+    <Preference
         android:key="details"
-        android:title="Edit personal details">
-        <EditTextPreference
-            android:key="name"
-            android:title="Name" />
-    </PreferenceScreen>
+        android:title="Edit details">
+    </Preference>
 
-    <PreferenceScreen
+    <Preference
         android:key="data"
-        android:title="Manage Data">
-        <EditTextPreference
-            android:key="name"
-            android:title="Name" />
-    </PreferenceScreen>
-
+        android:title="Reset Data">
+    </Preference>
 </PreferenceScreen>

@@ -1,23 +1,26 @@
 package com.p14137775.myapplication;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
+import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
 import wrappers.SQLWrapper;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.p14137775.myapplication.R.xml.settings_preferences;
 
 public class PreferencesFragment extends PreferenceFragment {
 
     private SharedPreferences prefs;
     Preference login;
     Preference logout;
+    Preference data;
+    Preference details;
     PreferenceScreen screen;
     boolean loggedin;
 
@@ -25,7 +28,7 @@ public class PreferencesFragment extends PreferenceFragment {
     public void onCreate(final Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(settings_preferences);
+        addPreferencesFromResource(R.xml.settings_preferences);
         prefs = getActivity().getSharedPreferences("preferences", MODE_PRIVATE);
         prefs.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
@@ -33,6 +36,7 @@ public class PreferencesFragment extends PreferenceFragment {
                 if (key.equals("loggedIn") && !loggedin) {
                     screen.removePreference(login);
                     screen.addPreference(logout);
+                    screen.addPreference(details);
                     loggedin = true;
                 }
             }
@@ -40,12 +44,24 @@ public class PreferencesFragment extends PreferenceFragment {
         loggedin = prefs.getBoolean("loggedIn", false);
         login = findPreference("login");
         logout = findPreference("logout");
+        data = findPreference("data");
+        details = findPreference("details");
+
         screen = getPreferenceScreen();
         if (loggedin) {
             screen.removePreference(login);
         } else {
             screen.removePreference(logout);
+            screen.removePreference(details);
         }
+
+        login.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                new Intent(getActivity(), LoginActivity.class);
+                return false;
+            }
+        });
 
 
         logout.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -54,31 +70,45 @@ public class PreferencesFragment extends PreferenceFragment {
                         "Logged out", Toast.LENGTH_SHORT).show();
                 screen.addPreference(login);
                 screen.removePreference(logout);
-                SQLWrapper db = new SQLWrapper(getActivity().getApplicationContext(), prefs);
+                screen.removePreference(details);
+                SQLWrapper db = new SQLWrapper(getActivity().getApplicationContext());
                 db.logoutUser();
                 return true;
             }
         });
-        final ListPreference units = (ListPreference) findPreference("units");
-        if (prefs.getBoolean("loggedIn", false))
-        if (prefs.getBoolean("kg", true)) {
-            units.setValueIndex(0);
-        } else {
-            units.setValueIndex(1);
-        }
+
+        details.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                getActivity().getFragmentManager().beginTransaction().replace(R.id.content, new PreferencesDetailsFragment()).addToBackStack(null).commit();
+                return true;
+            }
+        });
+
+        data.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                new AlertDialog.Builder(getActivity())
+                        .setMessage("Do you want to re-download the application data? (This will delete all data if you are not logged in)")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                               new SQLWrapper(getActivity()).resetData();
+                            }
+                        })
+                        .setNegativeButton("No", null).show();
+                return true;
+            }
+        });
     }
 
     @Override
     public void onResume() {
         super.onResume();
-         if (loggedin && (!prefs.getBoolean("loggedIn", true))) {
-             screen.removePreference(logout);
-             screen.addPreference(login);
-             loggedin = false;
-         } else if (!loggedin && prefs.getBoolean("loggedIn", false)) {
-             screen.removePreference(login);
-             screen.addPreference(logout);
-             loggedin = true;
-         }
+        if (prefs.getBoolean("loggedIn", false) && !loggedin) {
+            screen.removePreference(login);
+            screen.addPreference(logout);
+            screen.addPreference(details);
+            loggedin = true;
+        }
     }
 }

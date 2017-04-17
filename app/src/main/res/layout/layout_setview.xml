@@ -4,7 +4,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/setview"
-    android:elevation="2dp">
+    android:elevation="2dp"
+    android:layout_margin="2dp">
     <TextView
         android:id="@+id/set"
         android:layout_width="wrap_content"
@@ -12,34 +13,39 @@
         android:layout_marginStart="18dp"
         android:layout_marginEnd="8dp"
         android:text=""
-        android:textSize="18sp"/>
+        android:textSize="18sp"
+        android:textColor="@color/colorTextDark"/>
 
     <TextView
         android:id="@+id/reptag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/reps"
-        android:textSize="14sp"/>
+        android:textSize="14sp"
+        android:textColor="@color/colorTextDark"/>
 
     <EditText
         android:id="@+id/reps"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
-        tools:ignore="LabelFor" />
+        tools:ignore="LabelFor"
+        android:textColor="@color/colorTextDark"/>
 
     <TextView
         android:id="@+id/weighttag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/weight"
-        android:textSize="14sp"/>
+        android:textSize="14sp"
+        android:textColor="@color/colorTextDark"/>
     <EditText
         android:id="@+id/weight"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
-        tools:ignore="LabelFor" />
+        tools:ignore="LabelFor"
+        android:textColor="@color/colorTextDark"/>
 
     <TextView
         android:id="@+id/unittag"
@@ -48,6 +54,7 @@
         android:layout_marginStart="4dp"
         android:layout_marginEnd="18dp"
         android:text="@string/kilo"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:textColor="@color/colorTextDark"/>
 
 </views.SetView>

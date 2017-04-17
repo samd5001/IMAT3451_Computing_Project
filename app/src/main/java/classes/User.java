@@ -10,9 +10,8 @@ public class User {
     private double height;
     private double weight;
     private int goal;
-    private int units;
 
-    public User(String email, String password, String name, String dob, int gender, double height, double weight, int goal, int units) {
+    public User(String email, String password, String name, String dob, int gender, double height, double weight, int goal) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -21,7 +20,6 @@ public class User {
         this.height = height;
         this.weight = weight;
         this.goal = goal;
-        this.units = units;
     }
 
     public String getEmail() {
@@ -78,14 +76,6 @@ public class User {
 
     public void setGoal(int goal) {
         this.goal = goal;
-    }
-
-    public int getUnits() {
-        return units;
-    }
-
-    public void setUnits(int units) {
-        this.units = units;
     }
 
     public String getPassword() {

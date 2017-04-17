@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request.Method;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -131,7 +132,8 @@ public class RegisterBeginFragment extends Fragment {
             }
 
         };
-        VolleyWrapper.getInstance().addToRequestQueue(request);
+        request.setRetryPolicy(new DefaultRetryPolicy(10000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleyWrapper.getInstance().addToRequestQueue(request, "checkUser");
     }
 
     interface OnRegisterBegin {

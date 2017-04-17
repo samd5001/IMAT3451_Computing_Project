@@ -4,6 +4,8 @@
     android:layout_height="80dp"
     android:background="@drawable/daybox"
     android:gravity="center"
+    android:layout_margin="3dp"
+    android:weightSum="1"
     android:elevation="2dp">
 
     <TextView
