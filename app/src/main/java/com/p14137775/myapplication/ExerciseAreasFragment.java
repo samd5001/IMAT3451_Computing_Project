@@ -10,7 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class ExerciseAreasFragment extends Fragment{
+public class ExerciseAreasFragment extends Fragment {
 
     private OnAreaSelected mCallback;
 
@@ -51,6 +51,7 @@ public class ExerciseAreasFragment extends Fragment{
 
     interface OnAreaSelected {
         void onAreaSelected(String area);
+
         void onExerciseAdd();
     }
 }

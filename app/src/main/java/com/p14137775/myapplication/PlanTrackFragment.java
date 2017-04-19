@@ -39,10 +39,10 @@ public class PlanTrackFragment extends ExerciseTrackFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        db = ((MainActivity)getActivity()).getDb();
-        day = (((MainActivity)getActivity()).getDay());
-        exercise = ((MainActivity)getActivity()).getPlanExercise();
-        exerciseNum = ((MainActivity)getActivity()).getExerciseNum();
+        db = ((MainActivity) getActivity()).getDb();
+        day = (((MainActivity) getActivity()).getDay());
+        exercise = ((MainActivity) getActivity()).getPlanExercise();
+        exerciseNum = ((MainActivity) getActivity()).getExerciseNum();
         return inflater.inflate(R.layout.fragment_exercisetrack, parent, false);
     }
 
@@ -54,9 +54,9 @@ public class PlanTrackFragment extends ExerciseTrackFragment {
         image.setImageUrl(exercise.getImageURL(), mImageLoader);
         final ViewGroup vg = (ViewGroup) image.getParent();
         ImageView add = (ImageView) view.findViewById(R.id.imageView);
-        ((ViewGroup)add.getParent()).removeView(add);
+        ((ViewGroup) add.getParent()).removeView(add);
         ImageView remove = (ImageView) view.findViewById(R.id.imageView2);
-        ((ViewGroup)remove.getParent()).removeView(remove);
+        ((ViewGroup) remove.getParent()).removeView(remove);
         Button complete = (Button) view.findViewById(R.id.button);
         name.setText(exercise.getName());
         int setNum = 1;
@@ -73,7 +73,7 @@ public class PlanTrackFragment extends ExerciseTrackFragment {
             e.printStackTrace();
         }
         final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.gravity= Gravity.CENTER;
+        params.gravity = Gravity.CENTER;
         sets = new ArrayList<>();
         for (int i = 0; i < setNum; i++) {
             SetView set = new SetView(getContext());
@@ -89,9 +89,6 @@ public class PlanTrackFragment extends ExerciseTrackFragment {
             sets.add(set);
             vg.addView(set, i + 1);
         }
-
-
-
 
 
         complete.setOnClickListener(new View.OnClickListener() {
@@ -111,7 +108,8 @@ public class PlanTrackFragment extends ExerciseTrackFragment {
                                         ExerciseRecord record = new ExerciseRecord(exercise.getName(), day.getPlanName(), day.getDayNumber(), setsJSON.toString());
                                         db.storeRecord(record, true);
                                         mCallback.onCompletePlan();
-                                    }})
+                                    }
+                                })
                                 .setNegativeButton("No", null).show();
                     }
                 } catch (JSONException e) {

@@ -39,8 +39,8 @@ public class ExerciseTrackFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        exercise = ((MainActivity)getActivity()).getExercise();
-        user = ((MainActivity)getActivity()).getDb().getUser();
+        exercise = ((MainActivity) getActivity()).getExercise();
+        user = ((MainActivity) getActivity()).getDb().getUser();
         submitted = false;
         return inflater.inflate(R.layout.fragment_exercisetrack, parent, false);
     }
@@ -52,23 +52,23 @@ public class ExerciseTrackFragment extends Fragment {
         ImageView remove = (ImageView) view.findViewById(R.id.imageView2);
         Button complete = (Button) view.findViewById(R.id.button);
         NetworkImageView image = (NetworkImageView) view.findViewById(R.id.networkImageView);
-        ((ViewGroup)image.getParent()).removeView(image);
-        final SQLWrapper db = ((MainActivity)getActivity()).getDb();
+        ((ViewGroup) image.getParent()).removeView(image);
+        final SQLWrapper db = ((MainActivity) getActivity()).getDb();
         name.setText(exercise.getName());
         int setNum = 1;
         final ExerciseRecord record = db.getLastRecord(exercise.getName());
         if (record != null) {
-                JSONArray sets = record.getSetsJSON();
-           setNum = sets.length();
+            JSONArray sets = record.getSetsJSON();
+            setNum = sets.length();
         }
         final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.gravity= Gravity.CENTER;
+        params.gravity = Gravity.CENTER;
         sets = new ArrayList<>();
         for (int i = 0; i < setNum; i++) {
             SetView set = new SetView(getContext());
             if (record != null) {
                 try {
-                    JSONObject lastSet =  record.getSetsJSON().getJSONObject(i);
+                    JSONObject lastSet = record.getSetsJSON().getJSONObject(i);
                     set.setWeightReps(lastSet.getDouble("weight"), lastSet.getInt("reps"));
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -127,9 +127,6 @@ public class ExerciseTrackFragment extends Fragment {
         });
 
 
-
-
-
         complete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,8 +143,10 @@ public class ExerciseTrackFragment extends Fragment {
                                         }
                                         ExerciseRecord record = new ExerciseRecord(exercise.getName(), setsJSON.toString());
                                         db.storeRecord(record, true);
+                                        Toast.makeText(getContext(), "Record saved", Toast.LENGTH_SHORT).show();
                                         mCallback.onComplete();
-                                    }})
+                                    }
+                                })
                                 .setNegativeButton("No", null).show();
                     }
                 } catch (JSONException e) {
@@ -161,7 +160,7 @@ public class ExerciseTrackFragment extends Fragment {
         ArrayList<ExerciseRecord> previousRecords = new SQLWrapper(getContext()).getLastRecords(exercise.getName());
         boolean setsMatch = false;
         if (previousRecords.size() == 3) {
-            setsMatch= true;
+            setsMatch = true;
             for (int i = 0; i < 4; i++) {
                 JSONArray previousSets = previousRecords.get(i).getSetsJSON();
                 JSONArray nextSets = previousRecords.get(i + 1).getSetsJSON();
@@ -180,6 +179,7 @@ public class ExerciseTrackFragment extends Fragment {
             Toast.makeText(getActivity().getApplicationContext(),
                     "You've been doing the same weight for a while now, consider upping them", Toast.LENGTH_LONG).show();
             submitted = true;
+            return false;
         }
         JSONArray lastSets = null;
         if (!previousRecords.isEmpty()) {
@@ -223,6 +223,7 @@ public class ExerciseTrackFragment extends Fragment {
                             Toast.makeText(getActivity().getApplicationContext(),
                                     "Consider doing a heavier weight on " + set.getSets(), Toast.LENGTH_LONG).show();
                             submitted = true;
+                            return false;
                         }
                         break;
                     case 1:
@@ -230,11 +231,13 @@ public class ExerciseTrackFragment extends Fragment {
                             Toast.makeText(getActivity().getApplicationContext(),
                                     "Consider doing a lighter weight on " + set.getSets(), Toast.LENGTH_LONG).show();
                             submitted = true;
+                            return false;
                         }
                         if (set.getReps() > 12) {
                             Toast.makeText(getActivity().getApplicationContext(),
                                     "Consider doing a heavier weight on " + set.getSets(), Toast.LENGTH_LONG).show();
                             submitted = true;
+                            return false;
                         }
                         break;
                     case 2:
@@ -242,11 +245,13 @@ public class ExerciseTrackFragment extends Fragment {
                             Toast.makeText(getActivity().getApplicationContext(),
                                     "Consider doing a lighter weight on " + set.getSets(), Toast.LENGTH_LONG).show();
                             submitted = true;
+                            return false;
                         }
                         if (set.getReps() > 20) {
                             Toast.makeText(getActivity().getApplicationContext(),
                                     "Consider doing a heavier weight on " + set.getSets(), Toast.LENGTH_LONG).show();
                             submitted = true;
+                            return false;
                         }
                     default:
                         break;
@@ -255,12 +260,15 @@ public class ExerciseTrackFragment extends Fragment {
             if (set.getWeight() > exercise.getMaxThreshold()) {
                 Toast.makeText(getActivity().getApplicationContext(),
                         "You're He-Man or you're lying. Enter a valid weight on " + set.getSets(), Toast.LENGTH_LONG).show();
+                submitted = true;
                 return false;
+
             }
 
             if (set.getWeight() < exercise.getMinThreshold()) {
                 Toast.makeText(getActivity().getApplicationContext(),
                         "That won't get you anywhere. Do a higher weight on " + set.getSets(), Toast.LENGTH_LONG).show();
+                submitted = true;
                 return false;
             }
         }

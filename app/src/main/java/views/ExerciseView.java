@@ -18,7 +18,7 @@ public class ExerciseView extends LinearLayout {
     }
 
     public ExerciseView(Context context, AttributeSet attrs) {
-        super (context, attrs);
+        super(context, attrs);
         LayoutInflater.from(getContext()).inflate(R.layout.layout_setview, this);
         init();
     }
@@ -27,10 +27,11 @@ public class ExerciseView extends LinearLayout {
         name = (TextView) findViewById(R.id.title);
     }
 
-    public void setName(String name) {
-        this.name.setText(name);
-    }
     public String getName() {
         return this.name.getText().toString();
+    }
+
+    public void setName(String name) {
+        this.name.setText(name);
     }
 }

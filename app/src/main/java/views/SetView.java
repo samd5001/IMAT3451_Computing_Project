@@ -25,7 +25,7 @@ public class SetView extends LinearLayout {
     }
 
     public SetView(Context context, AttributeSet attrs) {
-        super (context, attrs);
+        super(context, attrs);
         init();
     }
 
@@ -41,12 +41,14 @@ public class SetView extends LinearLayout {
         setNum.setText("Set " + num);
     }
 
-    public void setWeightReps (double weight, int reps) {
+    public void setWeightReps(double weight, int reps) {
         this.weight.setText(String.valueOf(weight));
         this.reps.setText(String.valueOf(reps));
     }
 
-    public String getSets() {return setNum.getText().toString().trim();}
+    public String getSets() {
+        return setNum.getText().toString().trim();
+    }
 
     public float getReps() {
         if (!reps.getText().toString().isEmpty()) {
@@ -55,17 +57,16 @@ public class SetView extends LinearLayout {
             return 0;
     }
 
+    public void setReps(int reps) {
+        this.reps.setText(String.valueOf(reps));
+    }
+
     public float getWeight() {
         if (!weight.getText().toString().isEmpty()) {
             return Float.valueOf(weight.getText().toString().trim());
         } else {
             return 0;
         }
-    }
-
-
-    public void setReps(int reps) {
-        this.reps.setText(String.valueOf(reps));
     }
 
     public JSONObject getJSON() {

@@ -12,6 +12,7 @@ public class WelcomeFragment extends Fragment {
     private String title;
     private boolean last;
     private OnWelcomeComplete mCallback;
+
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         title = getArguments().getString("title");
         last = getArguments().getBoolean("last", false);
@@ -19,7 +20,7 @@ public class WelcomeFragment extends Fragment {
     }
 
     public void onViewCreated(View view, Bundle savedInstance) {
-        TextView title = (TextView)  view.findViewById(R.id.textView);
+        TextView title = (TextView) view.findViewById(R.id.textView);
         TextView description = (TextView) view.findViewById(R.id.textView2);
         TextView skip = (TextView) view.findViewById(R.id.textView3);
         TextView next = (TextView) view.findViewById(R.id.textView4);
@@ -48,11 +49,11 @@ public class WelcomeFragment extends Fragment {
             next.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ((MainActivity)getActivity()).incrementTab();
+                    ((MainActivity) getActivity()).incrementTab();
                 }
             });
         } else {
-            ((ViewGroup)skip.getParent()).removeView(skip);
+            ((ViewGroup) skip.getParent()).removeView(skip);
             next.setText(R.string.finish);
             next.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -76,7 +77,7 @@ public class WelcomeFragment extends Fragment {
     }
 
 
-    public interface OnWelcomeComplete {
+    interface OnWelcomeComplete {
         void onWelcomeComplete();
     }
 }

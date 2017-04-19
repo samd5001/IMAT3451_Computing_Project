@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class ExerciseSearchFragment extends Fragment {
-    private OnExerciseSelected mCallback;
     ArrayList<String> exercises;
+    private OnExerciseSelected mCallback;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -55,8 +55,8 @@ public class ExerciseSearchFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            String name = (String) listView.getItemAtPosition(position);
-            mCallback.onExerciseSelected(name);
+                String name = (String) listView.getItemAtPosition(position);
+                mCallback.onExerciseSelected(name);
             }
         });
 
@@ -74,12 +74,13 @@ public class ExerciseSearchFragment extends Fragment {
             mCallback = (OnExerciseSelected) context;
         } else {
             throw new ClassCastException(context.toString()
-                + " must implement ExerciseSearchFragment.OnExerciseSelected");
+                    + " must implement ExerciseSearchFragment.OnExerciseSelected");
         }
     }
 
     interface OnExerciseSelected {
         void onExerciseSelected(String name);
+
         void onExerciseAdd();
     }
 }

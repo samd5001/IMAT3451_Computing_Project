@@ -4,12 +4,11 @@ package classes;
 public class QueryValidator {
     private final String query;
 
-    public  QueryValidator(String query) {
+    public QueryValidator(String query) {
         this.query = query;
     }
 
     public String validateQuery() {
-        String validQuery = query.replaceAll("'", "''");
-        return validQuery;
+        return query.replaceAll("'", "''");
     }
 }

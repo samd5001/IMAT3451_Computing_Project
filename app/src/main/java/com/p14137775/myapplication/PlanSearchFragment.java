@@ -19,7 +19,7 @@ import java.util.List;
 import classes.Plan;
 import wrappers.SQLWrapper;
 
-public class PlanSearchFragment extends Fragment{
+public class PlanSearchFragment extends Fragment {
 
     private OnPlanSelected mCallback;
     private ArrayList<Plan> plans;

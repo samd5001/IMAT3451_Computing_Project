@@ -21,8 +21,8 @@ import wrappers.SQLWrapper;
 
 public class HistoryPlanDayFragment extends Fragment {
 
-    private OnPlanDaySelected mCallback;
     Plan plan;
+    private OnPlanDaySelected mCallback;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -51,7 +51,7 @@ public class HistoryPlanDayFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String daynum = (String) listView.getItemAtPosition(position);
-                if (!daynum.equals("No records have been made yet, Get to it!") ) {
+                if (!daynum.equals("No records have been made yet, Get to it!")) {
                     mCallback.onPlanDaySelected(plan.getName(), daynum);
                 }
             }

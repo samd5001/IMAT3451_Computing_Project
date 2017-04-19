@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class ExerciseFragment extends Fragment  {
+public class ExerciseFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_placeholder, parent, false);
@@ -19,8 +19,7 @@ public class ExerciseFragment extends Fragment  {
             return;
         }
 
-        if (getActivity().getSharedPreferences("preferences", MODE_PRIVATE).getBoolean("firstRun", true))
-        {
+        if (getActivity().getSharedPreferences("preferences", MODE_PRIVATE).getBoolean("firstRun", true)) {
             WelcomeFragment welcome = new WelcomeFragment();
             Bundle args = new Bundle();
             args.putString("title", "Tracking");

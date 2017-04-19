@@ -16,9 +16,10 @@ import views.NoRecordView;
 import views.RecordView;
 import wrappers.SQLWrapper;
 
-public class HistoryDisplayPlanFragment extends Fragment{
+public class HistoryDisplayPlanFragment extends Fragment {
     private ArrayList<ExerciseRecord> records;
-    private String  daynum;
+    private String daynum;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         records = new SQLWrapper(getActivity().getApplicationContext()).getDayRecords(getArguments().getString("name"), Integer.valueOf(getArguments().getString("daynum")));
@@ -30,12 +31,12 @@ public class HistoryDisplayPlanFragment extends Fragment{
     public void onViewCreated(View view, Bundle savedInstanceState) {
         LinearLayout container = (LinearLayout) view.findViewById(R.id.container);
         TextView title = (TextView) view.findViewById(R.id.name);
-        title.setText("Day " + daynum );
+        title.setText("Day " + daynum);
         if (records.isEmpty()) {
             container.addView(new NoRecordView(getContext()));
         } else {
             for (ExerciseRecord record : records) {
-                container.addView(new RecordView(getContext(), record));
+                container.addView(new RecordView(getContext(), record, true));
             }
         }
     }

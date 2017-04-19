@@ -2,36 +2,37 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="340dp"
     android:layout_height="180dp"
-    android:orientation="vertical"
-    android:background="@drawable/daybox"
     android:layout_gravity="center_horizontal"
     android:layout_marginBottom="10dp"
-    android:elevation="2dp">
+    android:background="@drawable/daybox"
+    android:elevation="2dp"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:layout_marginStart="25dp"
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="10dp"
         android:paddingBottom="10dp"
-        android:textSize="20sp"
-        android:textColor="@color/colorTextDark" />
+        android:textColor="@color/colorTextDark"
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorTextDark"
         android:layout_marginStart="25dp"
         android:text="@string/exercises_in_this_day"
-        android:textSize="16sp"/>
+        android:textColor="@color/colorTextDark"
+        android:textSize="16sp" />
 
     <HorizontalScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content">
+
         <LinearLayout
             android:id="@+id/exerciseContainer"
             android:layout_width="wrap_content"

@@ -11,18 +11,18 @@ import com.android.volley.toolbox.Volley;
 
 public class VolleyWrapper extends Application {
 
+    private static VolleyWrapper mInstance;
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
-    private static VolleyWrapper mInstance;
+
+    public static synchronized VolleyWrapper getInstance() {
+        return mInstance;
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
         mInstance = this;
-    }
-
-    public static synchronized VolleyWrapper getInstance() {
-        return mInstance;
     }
 
     public RequestQueue getRequestQueue() {
@@ -37,9 +37,11 @@ public class VolleyWrapper extends Application {
         if (mImageLoader == null) {
             mImageLoader = new ImageLoader(this.getRequestQueue(), new ImageLoader.ImageCache() {
                 private final LruCache<String, Bitmap> mCache = new LruCache<>(10);
+
                 public void putBitmap(String url, Bitmap bitmap) {
                     mCache.put(url, bitmap);
                 }
+
                 public Bitmap getBitmap(String url) {
                     return mCache.get(url);
                 }

@@ -78,7 +78,7 @@ public class ExerciseCreateFragment extends Fragment {
                         break;
                 }
                 final String description = descriptionText.getText().toString().trim();
-                if(name.isEmpty() || areas.length() == 0 || description.isEmpty()) {
+                if (name.isEmpty() || areas.length() == 0 || description.isEmpty()) {
                     Toast.makeText(getActivity().getApplicationContext(),
                             "Please enter a value for each field", Toast.LENGTH_LONG).show();
                 } else {
@@ -87,9 +87,10 @@ public class ExerciseCreateFragment extends Fragment {
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
                                     Exercise exercise = new Exercise(name, description, type, areas.toString());
-                                    ((MainActivity)getActivity()).getDb().storeExercise(exercise, true);
+                                    ((MainActivity) getActivity()).getDb().storeExercise(exercise, true);
                                     mCallback.onCreateExercise();
-                                }})
+                                }
+                            })
                             .setNegativeButton("No", null).show();
                 }
             }

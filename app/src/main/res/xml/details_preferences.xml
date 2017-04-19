@@ -1,28 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory
-        android:title="Edit details">
+    <PreferenceCategory android:title="Edit details">
         <EditTextPreference
             android:key="email"
             android:title="Email" />
 
+        <EditTextPreference
+            android:key="name"
+            android:title="Name" />
+
         <ListPreference
-            android:key="goal"
-            android:title="Goal"
+            android:dialogTitle="Select your goal"
             android:entries="@array/goal_array"
             android:entryValues="@array/goal_values"
-            android:dialogTitle="Select your goal" />
+            android:key="goal"
+            android:title="Goal" />
         <Preference
             android:key="submit"
             android:title="Save changes" />
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="Manage Account">
+    <PreferenceCategory android:title="Manage Account">
         <Preference
             android:key="reset"
             android:title="Reset password" />
+
+        <Preference
+            android:key="resetAccount"
+            android:title="Reset account" />
 
         <Preference
             android:key="delete"

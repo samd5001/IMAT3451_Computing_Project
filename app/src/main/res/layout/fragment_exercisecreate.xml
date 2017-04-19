@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimaryHighlight"
     android:gravity="center_horizontal"
-    android:weightSum="1"
-    android:background="@color/colorPrimaryHighlight">
+    android:orientation="vertical"
+    android:weightSum="1">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="vertical">
+
         <EditText
             android:id="@+id/ename"
             android:layout_width="240dp"
@@ -68,9 +71,9 @@
                 android:id="@+id/core"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/core"
+                android:layout_alignParentStart="true"
                 android:layout_below="@+id/chest"
-                android:layout_alignParentStart="true" />
+                android:text="@string/core" />
 
             <CheckBox
                 android:id="@+id/back"
@@ -96,37 +99,37 @@
             android:layout_marginStart="-115dp"
             android:layout_marginTop="10sp"
             android:text="@string/type"
-            android:textSize="16sp"
-            android:textColor="@color/colorTextDark"/>
+            android:textColor="@color/colorTextDark"
+            android:textSize="16sp" />
 
         <Spinner
             android:id="@+id/type"
-            android:entries="@array/type_array"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="-30dp"/>
+            android:layout_marginStart="-30dp"
+            android:entries="@array/type_array" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:layout_marginStart="-90dp"
+            android:layout_marginTop="10dp"
             android:text="@string/description"
-            android:textSize="16sp"
-            android:textColor="@color/colorTextDark"/>
+            android:textColor="@color/colorTextDark"
+            android:textSize="16sp" />
 
 
         <EditText
             android:id="@+id/description"
             android:layout_width="280dp"
             android:layout_height="100dp"
-            android:padding="5dp"
             android:background="@drawable/planbox"
             android:ems="10"
-            android:textColor="@color/colorTextDark"
-            android:inputType="textMultiLine"
             android:gravity="start"
+            android:inputType="textMultiLine"
+            android:padding="5dp"
+            android:textColor="@color/colorTextDark"
             tools:ignore="LabelFor" />
 
         <Button
@@ -134,10 +137,10 @@
             android:layout_width="260dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
+            android:backgroundTint="@color/colorPrimary"
             android:text="@string/save_exercise"
-            android:textColor="@color/colorTextLight"
-            android:textSize="18sp"
             android:textAppearance="@android:style/TextAppearance.Material.Body1"
-            android:backgroundTint="@color/colorPrimary" />
+            android:textColor="@color/colorTextLight"
+            android:textSize="18sp" />
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

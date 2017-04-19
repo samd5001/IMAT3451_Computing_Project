@@ -18,7 +18,6 @@ public class HistoryAreasFragment extends ExerciseAreasFragment {
     private OnHistoryAreaSelected mCallback;
 
 
-
     public void onViewCreated(View view, Bundle savedInstanceState) {
         ArrayList<String> areaRecords = new ArrayList<>();
         String[] areas = {"Chest", "Arms", "Legs", "Core", "Back", "Shoulders"};
@@ -44,7 +43,7 @@ public class HistoryAreasFragment extends ExerciseAreasFragment {
             }
         });
         ImageView add = (ImageView) view.findViewById(R.id.add);
-        ((ViewGroup)add.getParent()).removeView(add);
+        ((ViewGroup) add.getParent()).removeView(add);
     }
 
     public void onAttach(Context context) {

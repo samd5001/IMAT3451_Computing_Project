@@ -44,41 +44,41 @@ public class RegisterBeginFragment extends Fragment {
 
         register.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-            String email = emailText.getText().toString().trim();
-            String email2 = email2Text.getText().toString().trim();
-            String password = passwordText.getText().toString().trim();
-            String password2 = password2Text.getText().toString().trim();
-            if (!email.isEmpty() && !password.isEmpty()) {
-                if (email.equals(email2)) {
-                    if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                        if (password.equals(password2)) {
-                            if (new PasswordValidator().validate(password)) {
-                                checkUser(email, password);
+                String email = emailText.getText().toString().trim();
+                String email2 = email2Text.getText().toString().trim();
+                String password = passwordText.getText().toString().trim();
+                String password2 = password2Text.getText().toString().trim();
+                if (!email.isEmpty() && !password.isEmpty()) {
+                    if (email.equals(email2)) {
+                        if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                            if (password.equals(password2)) {
+                                if (new PasswordValidator().validate(password)) {
+                                    checkUser(email, password);
+                                } else {
+                                    Toast.makeText(getActivity().getApplicationContext(),
+                                            "Password must be greater than 8 characters, less than 15 characters and contain a number",
+                                            Toast.LENGTH_LONG).show();
+                                }
                             } else {
                                 Toast.makeText(getActivity().getApplicationContext(),
-                                        "Password must be greater than 8 characters, less than 15 characters and contain a number",
-                                        Toast.LENGTH_LONG).show();
+                                        "Passwords do not match", Toast.LENGTH_SHORT)
+                                        .show();
                             }
                         } else {
                             Toast.makeText(getActivity().getApplicationContext(),
-                                    "Passwords do not match", Toast.LENGTH_SHORT)
+                                    "Email is not valid", Toast.LENGTH_SHORT)
                                     .show();
                         }
                     } else {
                         Toast.makeText(getActivity().getApplicationContext(),
-                                "Email is not valid", Toast.LENGTH_SHORT)
+                                "Email address does not match", Toast.LENGTH_SHORT)
                                 .show();
                     }
                 } else {
                     Toast.makeText(getActivity().getApplicationContext(),
-                        "Email address does not match", Toast.LENGTH_SHORT)
-                        .show();
+                            "Please enter an email and password", Toast.LENGTH_LONG)
+                            .show();
                 }
-            } else {
-                Toast.makeText(getActivity().getApplicationContext(),
-                    "Please enter an email and password", Toast.LENGTH_LONG)
-                    .show();
-            }
 
             }
         });
@@ -95,7 +95,7 @@ public class RegisterBeginFragment extends Fragment {
         }
     }
 
-    private void checkUser (final String email, final String password) {
+    private void checkUser(final String email, final String password) {
         StringRequest request = new StringRequest(Method.POST,
                 URLWrapper.checkUserURL, new Response.Listener<String>() {
 

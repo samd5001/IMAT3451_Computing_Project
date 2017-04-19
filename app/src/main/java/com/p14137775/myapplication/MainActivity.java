@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements ExerciseAreasFrag
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             case R.id.sync:
-                    db.syncData();
+                db.syncData();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -291,11 +291,17 @@ public class MainActivity extends AppCompatActivity implements ExerciseAreasFrag
         switch (name) {
             case "Exercises":
                 historyFragment.getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom)
-                        .replace(R.id.placeholder, new HistoryAreasFragment(), "planSearch").addToBackStack(null).commit();
+                        .replace(R.id.placeholder, new HistoryAreasFragment(), "areaSearch").addToBackStack(null).commit();
                 break;
             case "Plans":
                 historyFragment.getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom)
                         .replace(R.id.placeholder, new HistorySearchPlanFragment(), "planSearch").addToBackStack(null).commit();
+                break;
+            case "All":
+                historyFragment.getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom)
+                        .replace(R.id.placeholder, new HistoryDisplayAllFragment(), "allRecords").addToBackStack(null).commit();
+                break;
+            default:
                 break;
         }
     }

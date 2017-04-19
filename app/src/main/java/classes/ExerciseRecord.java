@@ -45,6 +45,10 @@ public class ExerciseRecord {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getExerciseName() {
         return exerciseName;
     }
@@ -73,9 +77,5 @@ public class ExerciseRecord {
             e.printStackTrace();
         }
         return sets;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 }

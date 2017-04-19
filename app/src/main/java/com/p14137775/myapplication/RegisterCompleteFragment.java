@@ -62,7 +62,7 @@ public class RegisterCompleteFragment extends Fragment {
             public void onClick(View view) {
                 final String name = nameText.getText().toString().trim();
                 if (!name.isEmpty()) {
-                    CharSequence goals[] = new CharSequence[] {"Improve Strength", "Improve Muscle Mass", "Lose Fat"};
+                    CharSequence goals[] = new CharSequence[]{"Improve Strength", "Improve Muscle Mass", "Lose Fat"};
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                     builder.setTitle("Finally chose your goal");
                     builder.setItems(goals, new DialogInterface.OnClickListener() {
@@ -83,8 +83,8 @@ public class RegisterCompleteFragment extends Fragment {
                             String dob = date.sqlReady();
                             User user = new User(email, password, name, dob, gender, height, weight, selectedGoal);
                             registerUser(user);
-                            }
-                        });
+                        }
+                    });
                     builder.show();
                 } else {
                     Toast.makeText(getActivity().getApplicationContext(),
@@ -105,10 +105,6 @@ public class RegisterCompleteFragment extends Fragment {
             throw new ClassCastException(context.toString()
                     + " must implement RegisterCompleteFragment.OnRegisterComplete");
         }
-    }
-
-    interface OnRegisterComplete {
-        void onRegisterComplete();
     }
 
     private void registerUser(final User user) {
@@ -160,5 +156,9 @@ public class RegisterCompleteFragment extends Fragment {
         };
         request.setRetryPolicy(new DefaultRetryPolicy(10000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         VolleyWrapper.getInstance().addToRequestQueue(request, "register");
+    }
+
+    interface OnRegisterComplete {
+        void onRegisterComplete();
     }
 }

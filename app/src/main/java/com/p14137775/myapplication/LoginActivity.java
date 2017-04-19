@@ -1,6 +1,5 @@
 package com.p14137775.myapplication;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -53,8 +52,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (!email.isEmpty() && !password.isEmpty()) {
                     remoteLogin(email, password);
-                }
-                else {
+                } else {
                     Toast.makeText(getApplicationContext(), "Enter a valid email and password", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -77,8 +75,6 @@ public class LoginActivity extends AppCompatActivity {
         });
 
 
-
-
         skip.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 finish();
@@ -87,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onResume () {
+    public void onResume() {
         super.onResume();
         if (getSharedPreferences("preferences", MODE_PRIVATE).getBoolean("loggedIn", false)) {
             finish();
@@ -95,12 +91,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-
     private void remoteLogin(final String email, final String password) {
         StringRequest request = new StringRequest(Request.Method.POST,
                 URLWrapper.loginURL, new Response.Listener<String>() {
-
-            @SuppressLint("ApplySharedPref")
             @Override
             public void onResponse(String response) {
                 try {
@@ -108,7 +101,6 @@ public class LoginActivity extends AppCompatActivity {
                     boolean error = jObj.getBoolean("error");
 
                     if (!error) {
-                        getSharedPreferences("preferences", MODE_PRIVATE).edit().putBoolean("loggedIn", true).commit();
                         jObj = jObj.getJSONObject("user");
                         User user = new User(email, password, jObj.getString("name"), jObj.getString("dob"), jObj.getInt("gender"), jObj.getDouble("height"), jObj.getDouble("weight"), jObj.getInt("goal"));
                         db.loginUser(user);
@@ -129,7 +121,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 if (error instanceof NoConnectionError) {
-                    Toast.makeText(getApplicationContext(), "No Network Conenction", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "No Network Connection", Toast.LENGTH_SHORT).show();
                 }
             }
         }) {

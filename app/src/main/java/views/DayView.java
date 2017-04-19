@@ -18,7 +18,7 @@ public class DayView extends LinearLayout {
     private TextView title;
     private LinearLayout exercises;
 
-    public DayView(Context context , SQLWrapper db, Day day) {
+    public DayView(Context context, SQLWrapper db, Day day) {
         super(context);
         LayoutInflater.from(getContext()).inflate(R.layout.layout_dayview, this);
         init(db, day);

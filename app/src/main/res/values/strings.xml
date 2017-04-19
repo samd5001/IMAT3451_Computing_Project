@@ -14,7 +14,7 @@
     <string name="dob">Date of birth</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
-    <string name="height">Height (Metres)</string>
+    <string name="height">Height (cm)</string>
     <string name="weight">Weight</string>
     <string name="complete_reg">Complete Registration</string>
     <string name="settings">Settings</string>

@@ -1,39 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimaryHighlight"
     android:gravity="center_horizontal"
-    android:weightSum="1"
-    android:background="@color/colorPrimaryHighlight">
+    android:orientation="vertical"
+    android:weightSum="1">
+
     <LinearLayout
-        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
+        android:orientation="vertical"
         android:weightSum="1">
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
             android:gravity="center"
-            android:textSize="22sp"
-            android:textColor="@color/colorTextDark"/>
+            android:textColor="@color/colorTextDark"
+            android:textSize="22sp" />
 
         <com.android.volley.toolbox.NetworkImageView
             android:id="@+id/networkImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="center_horizontal" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="horizontal"
-            android:weightSum="1"
-            android:gravity="center">
+            android:weightSum="1">
 
             <ImageView
                 android:id="@+id/imageView"
@@ -56,11 +59,11 @@
             android:id="@+id/button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimary"
             android:text="@string/complete_rec"
-            android:textColor="@color/colorTextLight"
-            android:textSize="18sp"
             android:textAppearance="@android:style/TextAppearance.Material.Body1"
-            android:backgroundTint="@color/colorPrimary"/>
+            android:textColor="@color/colorTextLight"
+            android:textSize="18sp" />
 
 
     </LinearLayout>

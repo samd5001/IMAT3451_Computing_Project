@@ -43,7 +43,7 @@ public class PlanCurrentFragment extends Fragment {
         } else {
             title.setText(prefs.getString("currentPlan", ""));
             description.setText(R.string.nextday);
-            ((LinearLayout)description.getParent()).setOnClickListener(new View.OnClickListener() {
+            ((LinearLayout) description.getParent()).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mCallback.onPlanContinue(db.getPlan(prefs.getString("currentPlan", "")));

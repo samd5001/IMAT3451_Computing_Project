@@ -2,22 +2,23 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryHighlight">
+    android:background="@color/colorPrimaryHighlight"
+    android:orientation="vertical">
 
     <EditText
         android:id="@+id/editText"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:gravity="center_vertical"
-        android:hint="@string/search"
-        android:textSize="22sp"
-        android:background="@drawable/bluebar"
-        android:paddingStart="60dp"
-        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/bluebar"
+        android:gravity="center_vertical"
+        android:hint="@string/search"
+        android:paddingStart="60dp"
+        android:textSize="22sp"
         tools:ignore="RtlSymmetry" />
 
 
@@ -34,5 +35,5 @@
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/editText"
-        android:background="@color/colorBackground"/>
+        android:background="@color/colorBackground" />
 </RelativeLayout>

@@ -41,15 +41,15 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
                 if (!email.isEmpty()) {
                     checkUser(email);
-                }
-                else {
+                } else {
                     Toast.makeText(getApplicationContext(), "Enter a valid email", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
     }
-    private void checkUser (final String email) {
+
+    private void checkUser(final String email) {
         StringRequest request = new StringRequest(Method.POST,
                 URLWrapper.checkUserURL, new Response.Listener<String>() {
 
@@ -67,7 +67,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(), "Email sent", Toast.LENGTH_SHORT).show();
                                 finish();
                             }
-                        } , new Response.ErrorListener() {
+                        }, new Response.ErrorListener() {
 
                             @Override
                             public void onErrorResponse(VolleyError error) {

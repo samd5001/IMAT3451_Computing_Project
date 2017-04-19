@@ -1,55 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/daybox"
-    android:gravity="center"
     android:layout_margin="3dp"
-    android:weightSum="1"
-    android:elevation="2dp">
+    android:background="@drawable/daybox"
+    android:elevation="2dp"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:weightSum="1">
+
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:gravity="center_vertical">
+
         <TextView
             android:id="@+id/date"
             android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
             android:layout_margin="5dp"
-            android:textColor="@color/colorTextDark"/>
+            android:textColor="@color/colorTextDark"
+            android:textSize="14sp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
             <TextView
                 android:id="@+id/reps"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:text="@string/reps"
                 android:layout_margin="5dp"
-                android:textColor="@color/colorTextDark"/>
+                android:text="@string/reps"
+                android:textColor="@color/colorTextDark"
+                android:textSize="14sp" />
+
             <TextView
                 android:id="@+id/weight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:text="@string/weight_kg"
                 android:layout_margin="5dp"
-                android:textColor="@color/colorTextDark"/>
+                android:text="@string/weight_kg"
+                android:textColor="@color/colorTextDark"
+                android:textSize="14sp" />
         </LinearLayout>
+
         <HorizontalScrollView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.91">
+
             <LinearLayout
                 android:id="@+id/container"
                 android:layout_width="wrap_content"
@@ -62,15 +70,16 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center">
+
             <ImageView
                 android:id="@+id/delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:contentDescription="@string/delete_button"
                 android:layout_marginEnd="10dp"
                 android:background="@drawable/daybox"
                 android:backgroundTint="@color/colorPrimaryHighlight"
+                android:contentDescription="@string/delete_button"
                 app:srcCompat="@drawable/ic_delete" />
         </LinearLayout>
 

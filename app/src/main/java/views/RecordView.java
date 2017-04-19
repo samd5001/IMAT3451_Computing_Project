@@ -22,20 +22,20 @@ import classes.Set;
 import wrappers.SQLWrapper;
 
 @SuppressLint("ViewConstructor")
-public class RecordView extends LinearLayout{
-    public RecordView(Context context, ExerciseRecord record) {
+public class RecordView extends LinearLayout {
+    public RecordView(Context context, ExerciseRecord record, boolean nameRecord) {
         super(context);
         LayoutInflater.from(getContext()).inflate(R.layout.layout_recordview, this);
-        init(record);
+        init(record, nameRecord);
     }
 
-    private void init(final ExerciseRecord record) {
+    private void init(final ExerciseRecord record, boolean nameRecord) {
         LinearLayout container = (LinearLayout) findViewById(R.id.container);
         TextView date = (TextView) findViewById(R.id.date);
         date.setText(record.getTime());
         TextView title = (TextView) findViewById(R.id.title);
-        if (record.getPlanName().equals("")) {
-            ((ViewGroup)title.getParent()).removeView(title);
+        if (!nameRecord) {
+            ((ViewGroup) title.getParent()).removeView(title);
         } else {
             title.setText(record.getExerciseName());
         }
@@ -59,13 +59,14 @@ public class RecordView extends LinearLayout{
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 new SQLWrapper(getContext()).deleteRecord(record.getId(), record.getTime());
                                 deleteView();
-                            }})
+                            }
+                        })
                         .setNegativeButton("No", null).show();
             }
         });
     }
 
     private void deleteView() {
-        ((ViewGroup)getParent()).removeView(this);
+        ((ViewGroup) getParent()).removeView(this);
     }
 }

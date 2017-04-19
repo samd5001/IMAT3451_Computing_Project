@@ -11,7 +11,7 @@ import com.p14137775.myapplication.R;
 import classes.Set;
 
 
-public class SetRecordView extends LinearLayout{
+public class SetRecordView extends LinearLayout {
     private TextView reps;
     private TextView weight;
 
@@ -22,7 +22,7 @@ public class SetRecordView extends LinearLayout{
     }
 
     public SetRecordView(Context context, AttributeSet attrs) {
-        super (context, attrs);
+        super(context, attrs);
         LayoutInflater.from(getContext()).inflate(R.layout.layout_setrecordview, this);
     }
 

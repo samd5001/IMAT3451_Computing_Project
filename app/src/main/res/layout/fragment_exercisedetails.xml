@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryHighlight">
+
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
         <com.android.volley.toolbox.NetworkImageView
             android:id="@+id/networkImageView"
             android:layout_width="match_parent"
@@ -20,9 +21,9 @@
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:textSize="18sp"
+            android:gravity="center"
             android:textColor="@color/colorTextDark"
-            android:gravity="center" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/textView2"
@@ -38,19 +39,19 @@
             android:id="@+id/button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimary"
             android:text="@string/begin_ex"
-            android:textColor="@color/colorTextLight"
-            android:textSize="18sp"
             android:textAppearance="@android:style/TextAppearance.Material.Body1"
-            android:backgroundTint="@color/colorPrimary" />
+            android:textColor="@color/colorTextLight"
+            android:textSize="18sp" />
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30sp"
-            app:srcCompat="@drawable/ic_delete"
-            android:contentDescription="@string/delete_button" />
+            android:contentDescription="@string/delete_button"
+            app:srcCompat="@drawable/ic_delete" />
 
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

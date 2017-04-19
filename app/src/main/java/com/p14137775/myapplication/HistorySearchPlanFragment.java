@@ -20,8 +20,8 @@ import wrappers.SQLWrapper;
 
 public class HistorySearchPlanFragment extends Fragment {
 
-    private OnPlanRecordsSelected mCallback;
     ArrayList<String> plans;
+    private OnPlanRecordsSelected mCallback;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -61,7 +61,7 @@ public class HistorySearchPlanFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String name = (String) listView.getItemAtPosition(position);
-                if (!name.equals("No records have been made yet, Get to it!") ) {
+                if (!name.equals("No records have been made yet, Get to it!")) {
                     mCallback.onPlanRecordsSelected(name);
                 }
             }

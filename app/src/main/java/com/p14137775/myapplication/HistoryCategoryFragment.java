@@ -20,7 +20,7 @@ public class HistoryCategoryFragment extends Fragment {
     }
 
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        String[] areas = {"Exercises", "Plans"};
+        String[] areas = {"Exercises", "Plans", "All"};
         final ListView listView = (ListView) view.findViewById(R.id.listView);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity().getApplicationContext(), R.layout.layout_exerciseitem, R.id.textView, areas);
         listView.setAdapter(adapter);

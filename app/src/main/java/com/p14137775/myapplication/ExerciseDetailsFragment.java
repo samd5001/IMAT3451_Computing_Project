@@ -29,7 +29,7 @@ public class ExerciseDetailsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        exercise = ((MainActivity)getActivity()).getExercise();
+        exercise = ((MainActivity) getActivity()).getExercise();
         return inflater.inflate(R.layout.fragment_exercisedetails, parent, false);
     }
 
@@ -62,7 +62,8 @@ public class ExerciseDetailsFragment extends Fragment {
                                 public void onClick(DialogInterface dialog, int whichButton) {
                                     new SQLWrapper(getActivity().getApplicationContext()).deleteExercise(exercise.getName());
                                     mCallback.onDelete(exercise);
-                                }})
+                                }
+                            })
                             .setNegativeButton("No", null).show();
                 }
             });
@@ -70,7 +71,7 @@ public class ExerciseDetailsFragment extends Fragment {
         ArrayList<ExerciseRecord> records = new SQLWrapper(getContext()).getLastTwoRecords(exercise.getName());
         if (!records.isEmpty()) {
             for (ExerciseRecord record : records) {
-                vg.addView(new RecordView(getContext(), record));
+                vg.addView(new RecordView(getContext(), record, false));
             }
         }
 
@@ -88,6 +89,7 @@ public class ExerciseDetailsFragment extends Fragment {
 
     interface OnDetail {
         void onBegin();
+
         void onDelete(Exercise exercise);
     }
 }

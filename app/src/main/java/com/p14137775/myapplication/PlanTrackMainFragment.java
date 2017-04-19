@@ -28,8 +28,8 @@ public class PlanTrackMainFragment extends Fragment implements PlanDetailsFragme
                 .replace(R.id.placeholder, new PlanTrackFragment(), "planTrack").addToBackStack(null).commit();
     }
 
-        @Override
-        public void onPlanBegin(Day day) {
+    @Override
+    public void onPlanBegin(Day day) {
 
-        }
+    }
 }

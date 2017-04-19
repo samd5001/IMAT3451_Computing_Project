@@ -42,10 +42,7 @@ public class SQLWrapper extends SQLiteOpenHelper {
     private static final String tableExercisesSyncNew = "exercisesSync";
     private static final String tableExercisesSyncDelete = "exercisesDelete";
     private static final String tablePlans = "plans";
-    private static final String tablePlansSyncNew = "plansSync";
-    private static final String tablePlansSyncDelete = "plansDelete";
     private static final String tableDays = "days";
-    private static final String tableDaysSyncNew = "daysSync";
     private static final String tableRecords = "records";
     private static final String tableRecordsSyncNew = "recordsSync";
     private static final String tableRecordsSyncDelete = "recordsDelete";
@@ -89,6 +86,7 @@ public class SQLWrapper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
+        //String to create user table
         String createUser = "CREATE TABLE " + tableUser + "(" +
                 keyEmail + " varchar(50) NOT NULL PRIMARY KEY, " +
                 keyPass + " varchar(16) NOT NULL, " +
@@ -99,6 +97,7 @@ public class SQLWrapper extends SQLiteOpenHelper {
                 keyWeight + " float, " +
                 keyGoal + " bit)";
 
+        //String to create exercises table
         String createExercises = "CREATE TABLE " + tableExercises + "(" +
                 keyName + " varchar(30) NOT NULL PRIMARY KEY, " +
                 keyDesc + " varchar(300) NOT NULL, " +
@@ -109,12 +108,14 @@ public class SQLWrapper extends SQLiteOpenHelper {
                 keyAreas + " varchar(50), " +
                 keyUser + " tinyint NOT NULL)";
 
+        //String to create plans table
         String createPlans = "CREATE TABLE " + tablePlans + "(" +
                 keyName + " varchar(20) NOT NULL PRIMARY KEY, " +
                 keyDesc + " varchar(300) NOT NULL, " +
                 keyDays + " varchar(30) NOT NULL, " +
                 keyUser + " tinyint NOT NULL)";
 
+        //String to create days table
         String createDays = "CREATE TABLE " + tableDays + "(" +
                 keyPlName + " varchar(30) NOT NULL, " +
                 keyDayNum + " int NOT NULL, " +
@@ -124,6 +125,7 @@ public class SQLWrapper extends SQLiteOpenHelper {
                 keyPlName + " , " + keyDayNum + " ), FOREIGN KEY (" +
                 keyPlName + ") REFERENCES " + tablePlans + "(" + keyName + ") ON DELETE CASCADE)";
 
+        // String to create records table
         String createRecords = "CREATE TABLE " + tableRecords + "(" +
                 keyID + " int NOT NULL, " +
                 keyExName + " varchar(20) NOT NULL, " +
@@ -135,27 +137,24 @@ public class SQLWrapper extends SQLiteOpenHelper {
                 keyExName + ") REFERENCES " + tableExercises + "(" + keyID +
                 ") ON DELETE CASCADE)";
 
+        // String to create tables to manage syncing
         String createUnsyncedExercises = "CREATE TABLE " + tableExercisesSyncNew + " AS SELECT * FROM " + tableExercises;
-        String createUnsyncedPlans = "CREATE TABLE " + tablePlansSyncNew + " AS SELECT * FROM " + tablePlans;
-        String createUnsyncedDays = "CREATE TABLE " + tableDaysSyncNew + " AS SELECT * FROM " + tableDays;
         String createUnsyncedRecords = "CREATE TABLE " + tableRecordsSyncNew + " AS SELECT * FROM " + tableRecords;
         String createDeletedExercises = "CREATE TABLE " + tableExercisesSyncDelete + "( " + keyName + " int NOT NULL)";
-        String createDeletedPlans = "CREATE TABLE " + tablePlansSyncDelete + "( " + keyID + " int NOT NULL)";
         String createDeletedRecords = "CREATE TABLE " + tableRecordsSyncDelete + " (" + keyID + " int NOT NULL)";
 
+        //Executes all SQL Strings
         db.execSQL(createUser);
         db.execSQL(createExercises);
         db.execSQL(createPlans);
         db.execSQL(createDays);
         db.execSQL(createRecords);
         db.execSQL(createUnsyncedExercises);
-        db.execSQL(createUnsyncedPlans);
-        db.execSQL(createUnsyncedDays);
         db.execSQL(createUnsyncedRecords);
         db.execSQL(createDeletedExercises);
-        db.execSQL(createDeletedPlans);
         db.execSQL(createDeletedRecords);
 
+        // API request to get default data from server
         StringRequest request = new StringRequest(Request.Method.GET,
                 URLWrapper.getDefaultDataURL, new Response.Listener<String>() {
             @Override
@@ -173,7 +172,7 @@ public class SQLWrapper extends SQLiteOpenHelper {
                     for (int i = 0; i < jArr.length(); i++) {
                         JSONObject jData = jArr.getJSONObject(i);
                         Plan plan = loadJSONPlan(jData);
-                        storePlan(plan, false);
+                        storePlan(plan);
                     }
                     jArr = jObj.getJSONArray("days");
                     for (int i = 0; i < jArr.length(); i++) {
@@ -201,9 +200,13 @@ public class SQLWrapper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + tableUser);
         db.execSQL("DROP TABLE IF EXISTS " + tableExercises);
+        db.execSQL("DROP TABLE IF EXISTS " + tableExercisesSyncNew);
+        db.execSQL("DROP TABLE IF EXISTS " + tableExercisesSyncDelete);
         db.execSQL("DROP TABLE IF EXISTS " + tablePlans);
         db.execSQL("DROP TABLE IF EXISTS " + tableDays);
         db.execSQL("DROP TABLE IF EXISTS " + tableRecords);
+        db.execSQL("DROP TABLE IF EXISTS " + tableRecordsSyncNew);
+        db.execSQL("DROP TABLE IF EXISTS " + tableRecordsSyncDelete);
         onCreate(db);
     }
 
@@ -213,6 +216,7 @@ public class SQLWrapper extends SQLiteOpenHelper {
      *
      * @param user User to be logged in
      */
+    @SuppressLint("ApplySharedPref")
     public void loginUser(final User user) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -225,6 +229,7 @@ public class SQLWrapper extends SQLiteOpenHelper {
         values.put(keyWeight, user.getWeight());
         values.put(keyGoal, user.getGoal());
         db.insert(tableUser, null, values);
+        prefs.edit().putBoolean("loggedIn", true).commit();
         final ArrayList<ExerciseRecord> newRecords = getAllRecords();
         StringRequest request = new StringRequest(Request.Method.POST,
                 URLWrapper.getUserDataURL, new Response.Listener<String>() {
@@ -250,7 +255,7 @@ public class SQLWrapper extends SQLiteOpenHelper {
                         for (int i = 0; i < jArr.length(); i++) {
                             JSONObject jObj = jArr.getJSONObject(i);
                             Plan plan = loadJSONPlan(jObj);
-                            storePlan(plan, false);
+                            storePlan(plan);
                         }
                         jArr = jResponse.getJSONArray("days");
                         for (int i = 0; i < jArr.length(); i++) {
@@ -409,14 +414,18 @@ public class SQLWrapper extends SQLiteOpenHelper {
                             try {
                                 JSONObject jObj = new JSONObject(response);
                                 boolean error = jObj.getBoolean("error");
+                                // Checks for error message
                                 if (error) {
+                                    // logs out user as details no longer present
                                     logoutUser();
                                     Toast.makeText(context, "Account details have been changed please log back in", Toast.LENGTH_LONG).show();
                                     prefs.edit().putBoolean("syncing", false).commit();
                                 } else {
+                                    // gets row differences between local and remote db
                                     final int newExercises = jObj.getInt("exercises") - getExerciseCount();
                                     final int newPlans = jObj.getInt("plans") - getPlanCount();
                                     final int newRecords = jObj.getInt("records") - getRecordCount();
+                                    // sends second sync request with difference in rows
                                     if (newExercises != 0 || newPlans != 0 || newRecords != 0) {
                                         StringRequest syncRequest = new StringRequest(Request.Method.POST, URLWrapper.syncCompleteURL, new Response.Listener<String>() {
                                             @Override
@@ -428,6 +437,7 @@ public class SQLWrapper extends SQLiteOpenHelper {
                                                         SQLiteDatabase db = getWritableDatabase();
                                                         if (!jObj.getString("exercises").equals("null")) {
                                                             JSONArray jArr = jObj.getJSONArray("exercises");
+                                                            // inserts exercse response
                                                             if (newExercises > 0) {
                                                                 for (int i = 0; i < jArr.length(); i++) {
                                                                     JSONObject jEx = jArr.getJSONObject(i);
@@ -435,6 +445,7 @@ public class SQLWrapper extends SQLiteOpenHelper {
                                                                     storeExercise(exercise, false);
                                                                 }
                                                             } else {
+                                                                // creates a table to contain the exercise names then deletes any exercises that aren't in the table
                                                                 db.execSQL("CREATE TABLE temp(" + keyName + " varchar(50))");
                                                                 ContentValues values = new ContentValues();
                                                                 for (int i = 0; i < jArr.length(); i++) {
@@ -453,7 +464,7 @@ public class SQLWrapper extends SQLiteOpenHelper {
                                                                 for (int i = 0; i < jArr.length(); i++) {
                                                                     JSONObject jPl = jArr.getJSONObject(i);
                                                                     Plan plan = loadJSONPlan(jPl);
-                                                                    storePlan(plan, false);
+                                                                    storePlan(plan);
                                                                 }
                                                             } else {
                                                                 db.execSQL("CREATE TABLE temp(" + keyName + " varchar(50))");
@@ -477,6 +488,7 @@ public class SQLWrapper extends SQLiteOpenHelper {
                                                             }
                                                         }
 
+                                                        // inserts new records
                                                         if (!jObj.getString("records").equals("null")) {
                                                             JSONArray jArr = jObj.getJSONArray("records");
                                                             for (int i = 0; i < jArr.length(); i++) {
@@ -486,6 +498,7 @@ public class SQLWrapper extends SQLiteOpenHelper {
                                                             }
                                                         }
 
+                                                        // deletes old records using a table of record ids found on the server
                                                         if (!jObj.getString("recordIDs").equals("null")) {
                                                             JSONArray jArr = jObj.getJSONArray("recordIDs");
                                                             db.execSQL("CREATE TABLE temp(" + keyID + " int, " + keyTime + " datetime)");
@@ -602,6 +615,7 @@ public class SQLWrapper extends SQLiteOpenHelper {
                 params.put("email", oldEmail);
                 params.put("password", user.getPassword());
                 params.put("newEmail", user.getEmail());
+                params.put("name", user.getName());
                 params.put("goal", String.valueOf(user.getGoal()));
                 return params;
             }
@@ -622,6 +636,8 @@ public class SQLWrapper extends SQLiteOpenHelper {
             db.close();
             return user;
         } else {
+            cursor.close();
+            db.close();
             return null;
         }
     }
@@ -636,7 +652,7 @@ public class SQLWrapper extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM " + tableExercises + " WHERE " + keyUser + " = 1");
         db.close();
         prefs.edit().putBoolean("loggedIn", false).commit();
-        prefs.edit().putString("currentPlan", "none").apply();
+        prefs.edit().putString("currentPlan", "").apply();
     }
 
     public void deleteUser(final User user) {
@@ -648,8 +664,7 @@ public class SQLWrapper extends SQLiteOpenHelper {
                 if (response.equals("error")) {
                     Toast.makeText(context, "Unable to delete account please try again.", Toast.LENGTH_SHORT).show();
                 } else {
-                    logoutUser();
-                    prefs.edit().putBoolean("loggedIn", false).commit();
+                    Toast.makeText(context, "Account deleted", Toast.LENGTH_SHORT).show();
                 }
             }
         }, new Response.ErrorListener() {
@@ -671,48 +686,65 @@ public class SQLWrapper extends SQLiteOpenHelper {
     }
 
     public void resetData() {
-        SQLiteDatabase db = getWritableDatabase();
         User user = getUser();
         if (user != null) {
             logoutUser();
         }
-        onUpgrade(db, 1, 1);
-        loginUser(user);
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS " + tableUser);
+        db.execSQL("DROP TABLE IF EXISTS " + tableExercises);
+        db.execSQL("DROP TABLE IF EXISTS " + tableExercisesSyncNew);
+        db.execSQL("DROP TABLE IF EXISTS " + tableExercisesSyncDelete);
+        db.execSQL("DROP TABLE IF EXISTS " + tablePlans);
+        db.execSQL("DROP TABLE IF EXISTS " + tableDays);
+        db.execSQL("DROP TABLE IF EXISTS " + tableRecords);
+        db.execSQL("DROP TABLE IF EXISTS " + tableRecordsSyncNew);
+        db.execSQL("DROP TABLE IF EXISTS " + tableRecordsSyncDelete);
+        onCreate(db);
+        if (user != null) {
+            loginUser(user);
+        }
+        prefs.edit().putString("currentPlan", "").apply();
+        Toast.makeText(context, "Data Reset", Toast.LENGTH_SHORT).show();
     }
 
     public void resetUser() {
         final User user = getUser();
+        logoutUser();
+        StringRequest request = new StringRequest(Request.Method.POST,
+                URLWrapper.resetUserURL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("email", user.getEmail());
+                params.put("password", user.getPassword());
+                return params;
+            }
+        };
+        request.setRetryPolicy(new DefaultRetryPolicy(10000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleyWrapper.getInstance().addToRequestQueue(request, "reset");
         SQLiteDatabase db = getWritableDatabase();
-        if (user != null) {
-            logoutUser();
-            StringRequest request = new StringRequest(Request.Method.POST,
-                    URLWrapper.resetUserURL, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    error.printStackTrace();
-                }
-            }) {
-                @Override
-                protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<>();
-                    params.put("email", user.getEmail());
-                    params.put("password", user.getPassword());
-                    return params;
-                }
-            };
-            request.setRetryPolicy(new DefaultRetryPolicy(10000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-            VolleyWrapper.getInstance().addToRequestQueue(request, "reset");
-            onUpgrade(db, 1, 1);
-            onCreate(db);
-            loginUser(user);
-        } else {
-            onUpgrade(db, 1, 1);
-            onCreate(db);
-        }
+        db.execSQL("DROP TABLE IF EXISTS " + tableUser);
+        db.execSQL("DROP TABLE IF EXISTS " + tableExercises);
+        db.execSQL("DROP TABLE IF EXISTS " + tableExercisesSyncNew);
+        db.execSQL("DROP TABLE IF EXISTS " + tableExercisesSyncDelete);
+        db.execSQL("DROP TABLE IF EXISTS " + tablePlans);
+        db.execSQL("DROP TABLE IF EXISTS " + tableDays);
+        db.execSQL("DROP TABLE IF EXISTS " + tableRecords);
+        db.execSQL("DROP TABLE IF EXISTS " + tableRecordsSyncNew);
+        db.execSQL("DROP TABLE IF EXISTS " + tableRecordsSyncDelete);
+        onCreate(db);
+        loginUser(user);
+        Toast.makeText(context, "Account Reset", Toast.LENGTH_SHORT).show();
     }
 
     public void storeExercise(Exercise exercise, boolean newExercise) {
@@ -878,7 +910,7 @@ public class SQLWrapper extends SQLiteOpenHelper {
         return names;
     }
 
-    public void storePlan(Plan plan, boolean newPlan) {
+    private void storePlan(Plan plan) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(keyName, plan.getName());
@@ -887,88 +919,6 @@ public class SQLWrapper extends SQLiteOpenHelper {
         values.put(keyUser, (plan.isUserMade()) ? 1 : 0);
         db.insertWithOnConflict(tablePlans, null, values, SQLiteDatabase.CONFLICT_REPLACE);
         db.close();
-        if (plan.isUserMade() && getUser() != null && newPlan) {
-            storePlanRemote(plan);
-        }
-    }
-
-    private void storePlanRemote(final Plan plan) {
-        StringRequest request = new StringRequest(Request.Method.POST,
-                URLWrapper.storeDataURL, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-
-            }
-
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                SQLiteDatabase db = getWritableDatabase();
-                String selectQuery = "SELECT * FROM " + tablePlansSyncNew + " WHERE " + keyName + " = " + plan.getName();
-                Cursor cursor = db.rawQuery(selectQuery, null);
-                if (cursor.getCount() == 0) {
-                    ContentValues values = new ContentValues();
-                    values.put(keyName, plan.getName());
-                    values.put(keyDesc, plan.getDescription());
-                    values.put(keyDays, plan.getDays());
-                    values.put(keyUser, (plan.isUserMade()) ? 1 : 0);
-                    db.insert(tablePlansSyncNew, null, values);
-                }
-                cursor.close();
-            }
-        }) {
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put(keyEmail, getUser().getEmail());
-                params.put(keyName, plan.getName());
-                params.put(keyDesc, plan.getDescription());
-                params.put(keyDayNum, plan.getDays());
-                params.put(keyUser, "1");
-                return params;
-            }
-
-        };
-        request.setRetryPolicy(new DefaultRetryPolicy(10000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        wrappers.VolleyWrapper.getInstance().addToRequestQueue(request, "storePlan");
-    }
-
-    private void deletePlanRemote(final String name) {
-        StringRequest request = new StringRequest(Request.Method.POST,
-                wrappers.URLWrapper.deleteURL, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-            }
-
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                SQLiteDatabase db = getWritableDatabase();
-                String selectQuery = "SELECT * FROM " + tableExercisesSyncDelete + " WHERE " + keyName + " = " + name;
-                Cursor cursor = db.rawQuery(selectQuery, null);
-                if (cursor.getCount() == 0) {
-                    ContentValues values = new ContentValues();
-                    values.put(keyName, name);
-                    db.insert(tablePlansSyncDelete, null, values);
-                }
-                cursor.close();
-            }
-        }) {
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put(keyEmail, getUser().getEmail());
-                params.put(keyPlName, name);
-                return params;
-            }
-
-        };
-        request.setRetryPolicy(new DefaultRetryPolicy(10000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        wrappers.VolleyWrapper.getInstance().addToRequestQueue(request, "deletePlan");
     }
 
     private int getPlanCount() {
@@ -1021,7 +971,7 @@ public class SQLWrapper extends SQLiteOpenHelper {
         return plans;
     }
 
-    public void storeDay(Day day, boolean newDay) {
+    private void storeDay(Day day, boolean newDay) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(keyPlName, day.getPlanName());
@@ -1031,52 +981,6 @@ public class SQLWrapper extends SQLiteOpenHelper {
         values.put(keyReps, day.getReps());
         db.insertWithOnConflict(tableDays, null, values, SQLiteDatabase.CONFLICT_REPLACE);
         db.close();
-        if (getUser() != null && newDay) {
-            storeDayRemote(day);
-        }
-    }
-
-    private void storeDayRemote(final Day day) {
-        StringRequest request = new StringRequest(Request.Method.POST,
-                URLWrapper.storeDataURL, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-
-            }
-
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                SQLiteDatabase db = getWritableDatabase();
-                String selectQuery = "SELECT * FROM " + tableDaysSyncNew + " WHERE " + keyDayNum + " = " + day.getDayNumber() + " AND " + keyPlName + " = " + day.getPlanName();
-                Cursor cursor = db.rawQuery(selectQuery, null);
-                if (cursor.getCount() == 0) {
-                    ContentValues values = new ContentValues();
-                    values.put(keyPlName, day.getPlanName());
-                    values.put(keyDayNum, day.getDayNumber());
-                    values.put(keyEx, day.getExercisesJSON());
-                    values.put(keySets, day.getSets());
-                    values.put(keyReps, day.getReps());
-                    db.insert(tableDaysSyncNew, null, values);
-                }
-                cursor.close();
-
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put(keyEmail, getUser().getEmail());
-                params.put(keyPlName, day.getPlanName());
-                params.put(keyDayNum, day.getPlanName());
-                params.put(keyEx, day.getExercisesJSON());
-                params.put(keySets, day.getSets());
-                return params;
-            }
-        };
-        request.setRetryPolicy(new DefaultRetryPolicy(10000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        wrappers.VolleyWrapper.getInstance().addToRequestQueue(request, "storeDay");
     }
 
     public Day getDay(String planName, int dayNum) {
@@ -1146,7 +1050,7 @@ public class SQLWrapper extends SQLiteOpenHelper {
                     db.insert(tableRecordsSyncNew, null, values);
                 }
                 cursor.close();
-
+                db.close();
             }
         }) {
 
@@ -1289,7 +1193,7 @@ public class SQLWrapper extends SQLiteOpenHelper {
         return records;
     }
 
-    private ArrayList<ExerciseRecord> getAllRecords() {
+    public ArrayList<ExerciseRecord> getAllRecords() {
         SQLiteDatabase db = getReadableDatabase();
         String selectQuery = ("SELECT * FROM " + tableRecords);
         Cursor cursor = db.rawQuery(selectQuery, null);
