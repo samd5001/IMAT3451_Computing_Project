@@ -1,0 +1,14 @@
+<Files .htaccess>
+Order Allow,Deny
+Deny from all 
+</files>
+
+<Files reset.php>
+Order Allow,Deny
+Deny from all 
+</files>
+
+<Files reset_password.php>
+Order Allow,Deny
+Deny from all 
+</files>
